@@ -1,0 +1,71 @@
+.booking-form form {
+  display: flex;
+  flex-direction: column;
+}
+.info--room {
+  display: flex;
+  flex-direction: column;
+  background-color: white;
+  color: black;
+  padding: 1em;
+  border: 1px solid #017db0;
+  border-radius: 0.5em;
+  gap: 1rem;
+}
+
+.info--room > div {
+  display: flex;
+  gap: 1em;
+  width: 100%;
+}
+
+.info--row > div {
+  display: flex;
+  gap: 1em;
+  width: 100%;
+}
+
+.info--row h4 {
+  color: #017db0;
+}
+
+.booking-form {
+  display: flex;
+  flex-direction: column;
+  gap: 1em;
+  margin: 5em 0;
+}
+
+.div--form {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  gap: 2em;
+}
+
+.div--form--row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 2em;
+}
+
+.div--form-field {
+  display: block;
+  width: 100%;
+}
+
+select {
+  padding: 0.25rem;
+  width: 100%;
+  border-radius: 0.3rem;
+  border: 0.1rem solid;
+  border-color: #8f8f8f;
+
+  font-size: 1rem;
+  background-color: transparent;
+}
+
+select:focus {
+  border-color: #017db0;
+  outline: none;
+}

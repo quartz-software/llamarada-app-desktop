@@ -1,0 +1,23 @@
+.services-container {
+  padding: 20px;
+}
+
+.services-container h1 {
+  margin-bottom: 20px;
+  font-size: 24px;
+}
+
+.add-service-button {
+  background-color: #4caf50;
+  color: white;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 5px;
+  font-size: 16px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.add-service-button:hover {
+  background-color: #45a049;
+}

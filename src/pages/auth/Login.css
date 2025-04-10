@@ -1,0 +1,52 @@
+.login-form-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  width: 100%;
+}
+.form.login-form {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.2rem;
+
+  max-width: 400px;
+  width: 90%;
+  height: max-content;
+  margin: 0 auto;
+  padding: 1rem;
+
+  border-radius: 0.5rem;
+
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+}
+
+.login-form.form .login-form__img {
+  width: 90%;
+  max-width: 200px;
+}
+.login-form.form .form-field {
+  width: 100%;
+}
+
+.login-form.form .login-form__register {
+  font-size: 0.9rem;
+  text-align: center;
+}
+
+.login-form .login-form__reset-password {
+  width: 100%;
+  text-align: left;
+  font-size: 0.9rem;
+}
+
+.login-form .login-form__text {
+  width: 100%;
+  text-align: center;
+}
+
+.login-form .login-form__social {
+  display: flex;
+  gap: 1rem;
+}

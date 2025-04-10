@@ -1,0 +1,50 @@
+.div--search {
+  display: flex;
+  width: 100%;
+  align-items: end;
+  justify-content: space-between;
+  margin-bottom: 1em;
+}
+
+.table--rooms {
+  width: 100%;
+  text-align: left;
+  border-collapse: collapse;
+}
+
+/* 
+#005577 
+#017db0
+*/
+
+.table--rooms th {
+  border-bottom: 1px solid #005577;
+  color: #017db0;
+}
+
+.table--rooms td {
+  padding: 5px 3px;
+}
+
+.table--rooms tr {
+  /* border-top: 1px solid #d3dae6; */
+  border-bottom: 1px solid rgba(175, 175, 175, 0.2);
+}
+
+.table--rooms tr:nth-child(odd) {
+  background-color: rgba(150, 200, 220, 0.05);
+}
+
+.table--rooms tr > td:last-child {
+  text-align: center;
+}
+
+.table--rooms .table__message {
+  text-align: center;
+}
+
+/* quiero que tenga todo el ancho de la columnas de la taba */
+.div--nd {
+  width: 100%;
+  justify-content: center;
+}

@@ -1,0 +1,99 @@
+.service-list {
+  margin-top: 20px;
+  padding: 0 10px;
+  overflow-x: auto;
+}
+.service-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 20px;
+}
+.service-table th,
+.service-table td {
+  padding: 10px;
+  text-align: left;
+  border: 1px solid #555;
+}
+.service-table th {
+  background-color: #333;
+  font-size: 16px;
+  font-weight: bold;
+}
+.service-table td {
+  font-size: 14px;
+  color: #cccccc;
+}
+.service-actions > div {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 15px;
+}
+.service-actions button {
+  height: 2rem;
+  aspect-ratio: 1/1;
+  padding: 0.5rem;
+  font-size: 0.9rem;
+  border-radius: 0.5rem;
+  transition: background-color 0.3s ease-in-out;
+}
+.service-actions button:hover {
+  background-color: #015f80;
+}
+.service-actions button:active {
+  background-color: #014366;
+}
+.service-table td {
+  vertical-align: middle;
+}
+.service-table th,
+.service-table td:nth-child(1) {
+  width: 20%;
+}
+.service-table td:nth-child(2) {
+  width: 15%;
+}
+.service-table td:nth-child(3) {
+  width: 15%;
+}
+.service-table td:nth-child(4) {
+  width: 25%;
+}
+.service-table td:nth-child(5) {
+  width: 15%;
+}
+.service-table td:nth-child(6) {
+  width: 100%;
+}
+.service-availability span {
+  font-size: 0.9rem;
+  padding: 0.2em 0.25em;
+  border-radius: 0.25em;
+  font-weight: bold;
+  text-align: center;
+  color: white;
+}
+.service-availability.available span {
+  background-color: rgb(57, 126, 57);
+}
+.service-availability.unavailable span {
+  background-color: rgb(171, 42, 42);
+}
+
+@media (prefers-color-scheme: light) {
+  .service-table th,
+  .service-table td {
+    border: 1px solid #ddd;
+    color: #666666;
+  }
+  .service-table th {
+    background-color: #f2f2f2;
+    color: #444444;
+  }
+  .service-availability.available span {
+    background-color: rgb(62, 182, 62);
+  }
+  .service-availability.unavailable span {
+    background-color: rgb(193, 33, 33);
+  }
+}

@@ -1,0 +1,70 @@
+.room--card {
+  display: flex;
+  flex-direction: column;
+  background-color: white;
+  color: black;
+  padding: 10px;
+
+  justify-content: space-between;
+
+  border-radius: 0 0 8px 8px;
+
+  border-top: solid 5px black;
+
+  /* Aplicar un box-shadow */
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+}
+
+.room--card .tag {
+  background-color: black;
+  color: white;
+  padding: 0.25em 0.5em;
+  border-radius: 4px;
+  font-size: 0.8em;
+}
+
+.room--card > div {
+  display: flex;
+}
+
+.room--info {
+  width: 100%;
+}
+
+.room--card img {
+  width: 75px;
+  height: 50px;
+  border-radius: 4px;
+}
+
+.room--card.available {
+  border-color: #4fd22e;
+}
+
+.available .tag {
+  background-color: #4fd22e;
+}
+
+.room--card.cleaning {
+  border-color: #017db0;
+}
+
+.cleaning .tag {
+  background-color: #017db0;
+}
+
+.room--card.maintainance {
+  border-color: #e3a327;
+}
+
+.maintainance .tag {
+  background-color: #e3a327;
+}
+
+.room--card.occupied {
+  border-color: #e32727;
+}
+
+.occupied .tag {
+  background-color: #e32727;
+}

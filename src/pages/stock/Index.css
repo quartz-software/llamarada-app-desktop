@@ -1,0 +1,50 @@
+.index-stock .modal__content {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.index-stock .list-container {
+  overflow-x: auto;
+}
+.index-stock .list-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 20px;
+  overflow-x: auto;
+}
+
+.index-stock .list-table th,
+.index-stock .list-table td {
+  padding: 0.5rem 1rem;
+  text-align: left;
+  border: 1px solid #555;
+  vertical-align: middle;
+}
+.index-stock .list-table th {
+  background-color: #333;
+  font-size: 16px;
+  font-weight: bold;
+}
+.index-stock .list-table td {
+  font-size: 14px;
+}
+
+.index-stock .list-table td:nth-child(1) {
+  width: 5%;
+}
+
+.index-stock .list-table .actions button {
+  padding: 0.5rem;
+}
+.index-stock .list-table tr td:last-child div {
+  display: flex;
+  gap: 1em;
+}
+
+.index-stock .list-table .actions button:nth-child(2) {
+  background-color: rgba(189, 34, 34, 0.855);
+}
+.index-stock .list-table .actions button:nth-child(2):hover {
+  background-color: rgba(209, 37, 37, 0.855);
+}

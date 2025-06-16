@@ -26,20 +26,16 @@ const RoomRates = () => {
   const nav = useNavigate();
   const [roomRatesData, setRoomRatesData] = useState([]);
 
-  function getData() {
-    let url = "/api/rates";
-    fetch(url)
-      .then((res) => {
-        if (res.status == 200) {
-          return res.json();
-        }
-      })
-      .then((data) => {
-        setRoomRatesData(data);
-      })
-      .catch((error) => {
-        console.error(error.toString());
-      });
+  async function getData() {
+    try {
+      let url = "/api/rates";
+      const res = await fetch(url)
+      const data = await res.json()
+      setRoomRatesData(data);
+
+    } catch (error) {
+      console.error(error);
+    }
   }
 
   useEffect(() => {
@@ -52,8 +48,8 @@ const RoomRates = () => {
       <div className="div--search">
         <FormField label="Buscar" errorMessage="">
           <Input
-            handleInput={() => {}}
-            resetMessage={() => {}}
+            handleInput={() => { }}
+            resetMessage={() => { }}
             placeholder="Buscar"
             type="text"
             value=""

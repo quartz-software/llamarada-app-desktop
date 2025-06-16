@@ -15,26 +15,22 @@ const Habitaciones = () => {
     dateOut: "",
   });
 
-  function getData() {
-    const url = "/api/rooms";
-    const cont = {
-      method: "GET",
-      headers: {
-        "Content-Type": "application/json",
-      },
-    };
-    fetch(url, cont)
-      .then((res) => {
-        if (res.status == 200) {
-          return res.json();
-        }
-      })
-      .then((data) => {
-        setRoomsData(data);
-      })
-      .catch((error) => {
-        console.error(error.toString());
-      });
+  async function getData() {
+    try {
+      const url = "/api/rooms";
+      const cont = {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      };
+      const res = await fetch(url, cont)
+      const data = await res.json()
+      setRoomsData(data);
+
+    } catch (error) {
+      console.error(error);
+    }
   }
   function changeStatus(room: Room) {
     room.status = "available";
@@ -72,7 +68,7 @@ const Habitaciones = () => {
           <Input
             placeholder="Buscar"
             type="text"
-            resetMessage={() => {}}
+            resetMessage={() => { }}
             value={search.text}
             handleInput={(value: string) => {
               console.log(value);
@@ -83,7 +79,7 @@ const Habitaciones = () => {
           <Input
             placeholder="CheckIn"
             type="date"
-            resetMessage={() => {}}
+            resetMessage={() => { }}
             value={search.dateIn}
             handleInput={(value: string) => {
               setSearch({ ...search, dateIn: value });
@@ -94,7 +90,7 @@ const Habitaciones = () => {
           <Input
             placeholder="CheckOut"
             type="date"
-            resetMessage={() => {}}
+            resetMessage={() => { }}
             value={search.dateOut}
             handleInput={(value: string) => {
               setSearch({ ...search, dateOut: value });

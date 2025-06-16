@@ -21,20 +21,15 @@ type Room = {
 const Index = () => {
   const nav = useNavigate();
   const [roomsData, setRoomsData] = useState([]);
-  function getData() {
-    const url = "/api/rooms";
-    fetch(url)
-      .then((res) => {
-        if (res.status == 200) {
-          return res.json();
-        }
-      })
-      .then((data) => {
-        setRoomsData(data);
-      })
-      .catch((error) => {
-        console.error(error.toString());
-      });
+  async function getData() {
+    try {
+      const url = "/api/rooms";
+      const res = await fetch(url)
+      const data = await res.json()
+      setRoomsData(data);
+    } catch (error) {
+      console.error(error);
+    }
   }
 
   useEffect(() => {
@@ -46,8 +41,8 @@ const Index = () => {
       <div className="div--search">
         <FormField label="Buscar" errorMessage="">
           <Input
-            handleInput={() => {}}
-            resetMessage={() => {}}
+            handleInput={() => { }}
+            resetMessage={() => { }}
             placeholder="Buscar"
             type="text"
             value=""

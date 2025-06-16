@@ -31,11 +31,11 @@ const Services: React.FC = () => {
   };
 
   const handleEditService = (updatedService: Service) => {
-    /* setServices(
+    setServices(
       services.map((service) =>
         service.id === updatedService.id ? updatedService : service
       )
-    ); */
+    );
     setIsEditModalOpen(false);
   };
 
@@ -47,17 +47,18 @@ const Services: React.FC = () => {
     setServiceToEdit(service);
     setIsEditModalOpen(true);
   };
+  async function getList() {
+    try {
+      const res = await fetch("/api/services");
+      const data = await res.json();
+      setServices(data);
+    } catch (error) {
+      console.log(error);
+    }
+  }
 
   useEffect(() => {
-    fetch("/api/services")
-      .then((res) => {
-        if (res.ok) {
-          return res.json();
-        }
-      })
-      .then((data: Service[]) => {
-        setServices(data);
-      });
+    getList();
   }, []);
 
   return (

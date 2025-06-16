@@ -3,11 +3,12 @@ import Button from "../../../shared/components/Button";
 import "./ServiceList.css";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faPen, faTrashAlt } from "@fortawesome/free-solid-svg-icons";
+import { Servicio } from "@/shared/types/db/servicio";
 
 interface ServiceListProps {
-  services: Service[];
+  services: Servicio[];
   onDelete: (id: number) => void;
-  onEdit: (service: Service) => void;
+  onEdit: (service: Servicio) => void;
 }
 
 const ServiceList: React.FC<ServiceListProps> = ({
@@ -15,13 +16,10 @@ const ServiceList: React.FC<ServiceListProps> = ({
   onDelete,
   onEdit,
 }) => {
-  const ServiceTypes = {
-    "room service": "Servicio a la Habitacion",
-    cleaning: "Limpieza",
-    wellness: "Bienestar",
-    transport: "Transporte",
-    other: "Otro",
-  };
+  const ServiceTypes = [
+    "Alimentos",
+    "Limpieza"
+  ];
   return (
     <div className="service-list">
       <table className="service-table">
@@ -38,21 +36,20 @@ const ServiceList: React.FC<ServiceListProps> = ({
         <tbody>
           {services.map((service) => (
             <tr key={service.id}>
-              <td>{service.name}</td>
-              <td>{ServiceTypes[service.type]}</td>
+              <td>{service.nombre}</td>
+              <td>{ServiceTypes[service.idTipoServicio - 1]}</td>
               <td>
-                {service.price} {service.currency.toUpperCase()}
+                {service.precio} {service.moneda.toUpperCase()}
               </td>
               <td>
-                {service.openHour} - {service.closeHour}
+                {service.horaApertura} - {service.horaCierre}
               </td>
               <td
-                className={`service-availability ${
-                  service.available ? "available" : "unavailable"
-                }`}
+                className={`service-availability ${service.disponible ? "available" : "unavailable"
+                  }`}
               >
                 <span>
-                  {service.available ? "Disponible" : "No Disponible"}
+                  {service.disponible ? "Disponible" : "No Disponible"}
                 </span>
               </td>
               <td className="service-actions">

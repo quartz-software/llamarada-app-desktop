@@ -3,47 +3,72 @@ import "./Index.css";
 import ServiceModal from "./components/ServiceModal";
 import ServiceModalEdit from "./components/ServiceModalEdit";
 import ServiceList from "./components/ServiceList";
+import { Servicio } from "@/shared/types/db/servicio";
 
 const Services: React.FC = () => {
-  const [services, setServices] = useState<Service[]>([]);
+  const [services, setServices] = useState<Servicio[]>([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
-  const [serviceToEdit, setServiceToEdit] = useState<Service | null>(null);
+  const [serviceToEdit, setServiceToEdit] = useState<Servicio | null>(null);
 
-  const handleAddService = (service: Service) => {
-    const newService: Service = { ...service, id: Date.now() };
-    fetch("/api/services", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(newService),
-    })
-      .then((res) => {
-        if (res.status === 200) return res.json();
+  const handleAddService = async (service: Servicio) => {
+    try {
+      const newService: Servicio = { ...service, id: Date.now() };
+      await fetch("/api/services", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(newService),
       })
-      .then((data: Service) => {
-        console.log(data);
-        newService.id = data.id;
-        setServices([...services, newService]);
-        setIsModalOpen(false);
-      });
+      getList()
+      // setServices([...services, newService]);
+      setIsModalOpen(false);
+    } catch (error) {
+      console.error(error)
+    }
   };
 
-  const handleEditService = (updatedService: Service) => {
-    setServices(
-      services.map((service) =>
-        service.id === updatedService.id ? updatedService : service
-      )
-    );
-    setIsEditModalOpen(false);
+  const handleEditService = async (updatedService: Servicio) => {
+    try {
+      let url = `/api/services/${updatedService.id}`
+      await fetch(url, {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(updatedService),
+      })
+      getList()
+      // setServices(
+      //   services.map((service) =>
+      //     service.id === updatedService.id ? updatedService : service
+      //   )
+      // );
+      setIsEditModalOpen(false);
+    } catch (error) {
+      console.error(error)
+    }
   };
 
-  const handleDeleteService = (id: number) => {
-    setServices(services.filter((service) => service.id !== id));
+  const handleDeleteService = async (id: number) => {
+    try {
+      let url = `/api/services/${id}`
+      await fetch(url, {
+        method: "DELETE",
+        headers: {
+          "Content-Type": "application/json",
+        }
+      })
+      getList()
+      // setServices(services.filter((service) => service.id !== id));
+      setIsEditModalOpen(false);
+    } catch (error) {
+      console.error(error)
+    }
   };
 
-  const handleOpenEditModal = (service: Service) => {
+  const handleOpenEditModal = (service: Servicio) => {
     setServiceToEdit(service);
     setIsEditModalOpen(true);
   };
@@ -51,6 +76,8 @@ const Services: React.FC = () => {
     try {
       const res = await fetch("/api/services");
       const data = await res.json();
+      console.log(data);
+
       setServices(data);
     } catch (error) {
       console.log(error);

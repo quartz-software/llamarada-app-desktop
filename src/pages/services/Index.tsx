@@ -76,8 +76,6 @@ const Services: React.FC = () => {
     try {
       const res = await fetch("/api/services");
       const data = await res.json();
-      console.log(data);
-
       setServices(data);
     } catch (error) {
       console.log(error);

@@ -1,8 +1,8 @@
 import "./App.css";
 import { BrowserRouter, Navigate, Route, Routes } from "react-router-dom";
-import { useEffect, useState } from "react";
+// import { useState } from "react";
 
-import Layout from "./pages/common/Layout";
+import Layout from "./shared/Layout";
 
 import Home from "./pages/home/Home";
 import AddServices from "./pages/addservices/Index";
@@ -14,44 +14,22 @@ import Services from "./pages/services/Index";
 import Stock from "./pages/stock/Index";
 import Tasks from "./pages/tasks/Index";
 import RoomRates from "./pages/RoomRate/RoomRates";
-import useUserRole from "./pages/common/hooks/useUserRole";
+// import useUserRole from "./pages/common/hooks/useUserRole";
 import Rooms from "./pages/rooms/Index";
 import RoomRatesForm from "./pages/RoomRate/RoomRatesForm";
 import PromotionsForm from "./pages/promotions/PromotionsForm";
 import Habitaciones_formulario from "./pages/rooms/Habitaciones_formulario";
+// import { useEffect, useState } from "react";
+// import useUserRole from "./shared/hooks/useUserRole";
+// import { UserRole } from "./shared/types/UserRole";
 
 function App() {
-  const [isAuth, setIsAuth] = useState<boolean | null>(null);
-  const [role, setRole] = useState<UserRole | null>(null);
-  const { fetchRole } = useUserRole();
+  // const [isAuth, setIsAuth] = useState<boolean | null>(null);
+  // const [role, setRole] = useState<UserRole | null>(null);
+  // const { fetchRole } = useUserRole();
 
-  // ! Quitar useeffect
-  useEffect(() => {
-    let url = "/api/auth/login";
-    let cont = {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        email: "admin@admin.com",
-        password: "Admin123!",
-      }),
-    };
-    fetch(url, cont)
-      .then(async (res) => {
-        if (res.status == 200) {
-          setRole(await fetchRole());
-          setIsAuth(true);
-        }
-      })
-      .catch(() => { });
-  }, []);
-
-  /* 
-  *Funcionalidad para verificar autenticacion
-  useEffect(() => {
-    fetch("/api/auth/check", { method: "POST", credentials: "include" })
+  /* useEffect(() => {
+    fetch("/api/auth/check", { method: "GET", credentials: "include" })
       .then((res) => {
         if (res.status === 200) {
           return res.json();
@@ -65,11 +43,10 @@ function App() {
       .catch(() => {
         setIsAuth(false);
       });
-  }, []);
-  */
-  if (isAuth === null) {
-    return <div>Loading...</div>;
-  }
+  }, [fetchRole]); */
+  // if (isAuth === null) {
+  // return <div>Loading...</div>;
+  // }
   return (
     <BrowserRouter>
       <Routes>
@@ -78,13 +55,15 @@ function App() {
           <Route
             index
             element={
-              isAuth && (role === "admin" || role === "recepcionist") ? (
-                <Navigate to="/home" />
-              ) : (
-                <Navigate to="/login" />
-              )
+              // isAuth &&
+              // (role === "administrador" || role === "recepcionista") ? (
+              // <Navigate to="/home" />
+              // ) : (
+              <Navigate to="/login" />
+              // )
             }
           />
+
           <Route path="home" element={<Home />} />
           <Route path="addservices" element={<AddServices />} />
           <Route path="bookings">
@@ -106,9 +85,9 @@ function App() {
           <Route path="services" element={<Services />} />
           <Route path="stock" element={<Stock />} />
           <Route path="tasks" element={<Tasks />} />
-        </Route >
-      </Routes >
-    </BrowserRouter >
+        </Route>
+      </Routes>
+    </BrowserRouter>
   );
 }
 

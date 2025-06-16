@@ -1,10 +1,10 @@
-import Input from "../common/components/Input";
+import Input from "../../shared/components/Input";
 import CardRoom from "../bookings/components/CardRoom";
 
 import { useEffect, useState } from "react";
 
 import "./Index.css";
-import FormField from "../common/components/FormField";
+import FormField from "../../shared/components/FormField";
 
 const Habitaciones = () => {
   const [roomsData, setRoomsData] = useState<Room[]>([]);
@@ -12,12 +12,12 @@ const Habitaciones = () => {
     text: "",
     dateIn: "",
     // new Date().toISOString().split('T')[0]
-    dateOut: ""
+    dateOut: "",
   });
 
   function getData() {
-    let url = "/api/rooms";
-    let cont = {
+    const url = "/api/rooms";
+    const cont = {
       method: "GET",
       headers: {
         "Content-Type": "application/json",
@@ -37,28 +37,26 @@ const Habitaciones = () => {
       });
   }
   function changeStatus(room: Room) {
-    room.status = "available"
-    return room
+    room.status = "available";
+    return room;
   }
 
-  function fileterRooms(search: { text: string, dateIn: string, dateOut: string }, arr: Room[]) {
-    if (search.dateIn == "" || search.dateOut == "") return arr
-
-    const checkInDate = new Date(search.dateIn)
-    const checkOutDate = new Date(search.dateOut)
-    let considences = arr.filter((room) => {
-      return room.bookings.every((booking) => {
+  function fileterRooms(arr: Room[]) {
+    console.log(arr);
+    if (search.dateIn == "" || search.dateOut == "") return arr;
+    const checkInDate = new Date(search.dateIn);
+    const checkOutDate = new Date(search.dateOut);
+    console.log({ checkInDate, checkOutDate });
+    const considences = arr.filter((room) => {
+      return room.reservas.every((booking) => {
         const bookingCheckIn = new Date(booking.checkIn);
         const bookingCheckOut = new Date(booking.checkOut);
 
         return checkOutDate <= bookingCheckIn || checkInDate >= bookingCheckOut;
-      })
-    })
-    console.log(considences);
+      });
+    });
 
-    return considences
-
-
+    return considences;
   }
 
   useEffect(() => {
@@ -74,42 +72,48 @@ const Habitaciones = () => {
           <Input
             placeholder="Buscar"
             type="text"
-            resetMessage={() => { }}
+            resetMessage={() => {}}
             value={search.text}
             handleInput={(value: string) => {
               console.log(value);
-            }} />
+            }}
+          />
         </FormField>
         <FormField label="CheckIn" errorMessage="">
           <Input
             placeholder="CheckIn"
             type="date"
-            resetMessage={() => { }}
+            resetMessage={() => {}}
             value={search.dateIn}
             handleInput={(value: string) => {
-              setSearch({ ...search, dateIn: value })
-            }} />
+              setSearch({ ...search, dateIn: value });
+            }}
+          />
         </FormField>
         <FormField label="CheckOut" errorMessage="">
           <Input
             placeholder="CheckOut"
             type="date"
-            resetMessage={() => { }}
+            resetMessage={() => {}}
             value={search.dateOut}
             handleInput={(value: string) => {
-              setSearch({ ...search, dateOut: value })
-            }} />
+              setSearch({ ...search, dateOut: value });
+            }}
+          />
         </FormField>
       </div>
       <div className="content--rooms">
-        {fileterRooms(search, roomsData).map((room, index) => {
+        {fileterRooms(roomsData).map((room, index) => {
           return (
-            <CardRoom key={index} room={
-              search.dateIn == "" || search.dateOut == "" ?
-                room :
-                changeStatus(room)
-            } />
-          )
+            <CardRoom
+              key={index}
+              room={
+                search.dateIn == "" || search.dateOut == ""
+                  ? room
+                  : changeStatus(room)
+              }
+            />
+          );
         })}
       </div>
     </div>

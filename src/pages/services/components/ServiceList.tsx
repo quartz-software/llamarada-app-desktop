@@ -1,5 +1,5 @@
 import React from "react";
-import Button from "../../common/components/Button";
+import Button from "../../../shared/components/Button";
 import "./ServiceList.css";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faPen, faTrashAlt } from "@fortawesome/free-solid-svg-icons";

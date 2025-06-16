@@ -1,9 +1,10 @@
-import { defineConfig } from "vite";
+import { defineConfig, loadEnv } from "vite";
 import path from "node:path";
 import electron from "vite-plugin-electron/simple";
 import react from "@vitejs/plugin-react";
 import tailwindcss from "@tailwindcss/vite";
 
+const apiURL = loadEnv("dev", process.cwd()).VITE_API_URL;
 // https://vitejs.dev/config/
 export default defineConfig({
   plugins: [
@@ -25,19 +26,19 @@ export default defineConfig({
       renderer:
         process.env.NODE_ENV === "test"
           ? // https://github.com/electron-vite/vite-plugin-electron-renderer/issues/78#issuecomment-2053600808
-          undefined
+            undefined
           : {},
     }),
     tailwindcss(),
   ],
   server: {
     proxy: {
-      "/api": "http://localhost:8080",
+      "/api": apiURL,
     },
   },
   resolve: {
     alias: {
-      "@": path.resolve(__dirname, "./src")
-    }
-  }
+      "@": path.resolve(__dirname, "./src"),
+    },
+  },
 });

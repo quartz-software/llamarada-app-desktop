@@ -1,3 +1,5 @@
+import { UserRole } from "../types/UserRole";
+
 const useUserRole = () => {
   const fetchRole = async (): Promise<UserRole | null> => {
     try {
@@ -7,9 +9,9 @@ const useUserRole = () => {
       });
 
       if (response.ok) {
-        const data: { role: UserRole } = await response.json();
-        localStorage.setItem("userRole", data.role);
-        return data.role;
+        const data: UserRole = await response.json();
+        localStorage.setItem("userRole", data);
+        return data;
       } else {
         throw new Error("No autenticado o rol no disponible");
       }

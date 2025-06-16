@@ -1,7 +1,7 @@
 import { useLocation, useNavigate } from "react-router-dom";
-import Button from "../common/components/Button";
-import FormField from "../common/components/FormField";
-import Input from "../common/components/Input";
+import Button from "../../shared/components/Button";
+import FormField from "../../shared/components/FormField";
+import Input from "../../shared/components/Input";
 
 import "./BookingForm.css";
 import { useEffect, useState } from "react";
@@ -28,8 +28,8 @@ const BookingForm = () => {
     nAdults: 0,
     nChild: 0,
     bookingDate: Date.now(),
-    checkIn: new Date().toISOString().split('T')[0],
-    checkOut: new Date().toISOString().split('T')[0],
+    checkIn: new Date().toISOString().split("T")[0],
+    checkOut: new Date().toISOString().split("T")[0],
     status: "pending",
     totalPrice: 0.0,
     bookingOrigin: "",
@@ -41,7 +41,8 @@ const BookingForm = () => {
     const inicio = bookingData.checkIn;
     const fin = bookingData.checkOut;
 
-    const diferenciaEnMilisegundos = new Date(fin).getTime() - new Date(inicio).getTime();
+    const diferenciaEnMilisegundos =
+      new Date(fin).getTime() - new Date(inicio).getTime();
 
     const diferenciaEnDias = diferenciaEnMilisegundos / (1000 * 60 * 60 * 24);
 
@@ -66,9 +67,7 @@ const BookingForm = () => {
         bookingOrigin: "system",
         employeeId: bookingData.employeeId,
         clientId: bookingData.clientId,
-        rooms: [
-          parseInt(room.id),
-        ]
+        rooms: [parseInt(room.id)],
       }),
     };
 
@@ -163,8 +162,9 @@ const BookingForm = () => {
               >
                 {clientsData.map((client, index) => (
                   <option key={index} value={client.id}>
-                    {`${client.user?.dni}   |   ${client.user?.firstname} ${client.user?.lastname1
-                      } ${client.user?.lastname2 ?? ""}`}
+                    {`${client.user?.dni}   |   ${client.user?.firstname} ${
+                      client.user?.lastname1
+                    } ${client.user?.lastname2 ?? ""}`}
                   </option>
                 ))}
               </select>
@@ -192,7 +192,7 @@ const BookingForm = () => {
                 setBookingData({ ...bookingData, nAdults: value });
               }}
               value={bookingData.nAdults}
-              resetMessage={() => { }}
+              resetMessage={() => {}}
             />
           </FormField>
           <FormField label="NUMERO DE NIÑOS:" errorMessage=" ">
@@ -202,7 +202,7 @@ const BookingForm = () => {
                 setBookingData({ ...bookingData, nChild: value });
               }}
               value={bookingData.nChild}
-              resetMessage={() => { }}
+              resetMessage={() => {}}
             />
           </FormField>
         </div>
@@ -217,7 +217,7 @@ const BookingForm = () => {
                 });
                 console.log(value);
               }}
-              resetMessage={() => { }}
+              resetMessage={() => {}}
               value={bookingData.checkIn}
             />
           </FormField>
@@ -244,7 +244,7 @@ const BookingForm = () => {
               handleInput={(value: number) => {
                 setBookingData({ ...bookingData, totalPrice: value });
               }}
-              resetMessage={() => { }}
+              resetMessage={() => {}}
               value={bookingData.totalPrice}
             />
           </FormField>
@@ -255,7 +255,7 @@ const BookingForm = () => {
                 console.log(value);
               }}
               value={0}
-              resetMessage={() => { }}
+              resetMessage={() => {}}
             />
           </FormField>
         </div>

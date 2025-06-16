@@ -1,12 +1,12 @@
 import { useEffect, useState } from "react";
-import Input from "../common/components/Input";
-import Button from "../common/components/Button";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faPen } from "@fortawesome/free-solid-svg-icons";
+import Input from "../../shared/components/Input";
+import Button from "../../shared/components/Button";
+// import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+// import { faPen } from "@fortawesome/free-solid-svg-icons";
 
 import "./Index.css";
 import { useNavigate } from "react-router-dom";
-import FormField from "../common/components/FormField";
+import FormField from "../../shared/components/FormField";
 
 type Room = {
   id: string;
@@ -22,7 +22,7 @@ const Index = () => {
   const nav = useNavigate();
   const [roomsData, setRoomsData] = useState([]);
   function getData() {
-    let url = "/api/rooms";
+    const url = "/api/rooms";
     fetch(url)
       .then((res) => {
         if (res.status == 200) {
@@ -46,8 +46,8 @@ const Index = () => {
       <div className="div--search">
         <FormField label="Buscar" errorMessage="">
           <Input
-            handleInput={() => { }}
-            resetMessage={() => { }}
+            handleInput={() => {}}
+            resetMessage={() => {}}
             placeholder="Buscar"
             type="text"
             value=""
@@ -76,7 +76,7 @@ const Index = () => {
           <div className="div--nd">No se encomtraron cuartos</div>
         ) : (
           <tbody>
-            {roomsData.map((habitacion: Room) => {
+            {/* {roomsData.map((habitacion: Room) => {
               return (
                 <tr>
                   <td>{habitacion.id}</td>
@@ -97,7 +97,7 @@ const Index = () => {
                   </td>
                 </tr>
               );
-            })}
+            })} */}
           </tbody>
         )}
       </table>

@@ -1,10 +1,10 @@
 import { FC } from "react";
-import Button from "../../common/components/Button";
+import Button from "../../../shared/components/Button";
 import "./CardRoom.css";
 import { useNavigate } from "react-router-dom";
 
 type Props = {
-  room: Room
+  room: Room;
 };
 
 const CardRoom: FC<Props> = ({ room }) => {

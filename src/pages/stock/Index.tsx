@@ -1,8 +1,8 @@
 import { useEffect, useState } from "react";
-import Modal from "../common/components/Modal";
-import FormField from "../common/components/FormField";
-import Input from "../common/components/Input";
-import Button from "../common/components/Button";
+import Modal from "../../shared/components/Modal";
+import FormField from "../../shared/components/FormField";
+import Input from "../../shared/components/Input";
+import Button from "../../shared/components/Button";
 import "./Index.css";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faPen, faTrash } from "@fortawesome/free-solid-svg-icons";

@@ -4,27 +4,27 @@ import {
   faDollarSign,
   faDoorClosed,
   faHome,
-  faPlusCircle,
+  // faPlusCircle,
   faSignOut,
   faTags,
-  faTasks,
+  // faTasks,
   faTools,
 } from "@fortawesome/free-solid-svg-icons";
 import { Link, Outlet, useLocation, useNavigate } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import "./Layout.css";
-import useLogout from "./hooks/useLogout";
+import logout from "./hooks/useLogout";
 import useHasRole from "./hooks/useHasRole";
 
 const Layout = () => {
-  const isAdmin = useHasRole("admin");
+  const isAdmin = useHasRole("administrador");
   const navigate = useNavigate();
   const location = useLocation();
 
   const listItems = [
     {
       icon: faHome,
-      path: "/",
+      path: "/home",
       label: "Inicio",
       show: true,
     },
@@ -78,7 +78,7 @@ const Layout = () => {
     },
   ];
   async function handleLogout(): Promise<void> {
-    let loggedout = await useLogout();
+    const loggedout = await logout();
     if (loggedout == true) navigate("/login");
   }
   const isActiveLink = (path: string) => location.pathname === path;
@@ -92,8 +92,9 @@ const Layout = () => {
               item.show && (
                 <li
                   key={index}
-                  className={`navbar__item ${isActiveLink(item.path) ? "active" : ""
-                    }`}
+                  className={`navbar__item ${
+                    isActiveLink(item.path) ? "active" : ""
+                  }`}
                 >
                   <Link className="navbar__link" to={item.path}>
                     <i>

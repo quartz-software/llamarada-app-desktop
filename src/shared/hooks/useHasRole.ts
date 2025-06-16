@@ -1,3 +1,5 @@
+import { UserRole } from "../types/UserRole";
+
 const useHasRole = (...allowedRoles: UserRole[]): boolean => {
   const role = localStorage.getItem("userRole");
   if (role === null && typeof role !== "string") return false;

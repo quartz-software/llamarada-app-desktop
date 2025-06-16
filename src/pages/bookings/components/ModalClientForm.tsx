@@ -1,7 +1,7 @@
 import { FC, useState } from "react";
-import Button from "../../common/components/Button";
-import FormField from "../../common/components/FormField";
-import Input from "../../common/components/Input";
+import Button from "../../../shared/components/Button";
+import FormField from "../../../shared/components/FormField";
+import Input from "../../../shared/components/Input";
 import "./ModalClientForm.css";
 
 type Props = {

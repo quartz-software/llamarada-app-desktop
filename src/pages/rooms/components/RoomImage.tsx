@@ -1,21 +1,23 @@
-import { FC, useState } from "react"
-import Button from "../../common/components/Button"
-import FormField from "../../common/components/FormField"
-import Input from "../../common/components/Input"
+import { FC, useState } from "react";
+import Button from "../../../shared/components/Button";
+import FormField from "../../../shared/components/FormField";
+import Input from "../../../shared/components/Input";
 
-import "./RoomImage.css"
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
-import { faImage } from "@fortawesome/free-solid-svg-icons"
+import "./RoomImage.css";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faImage } from "@fortawesome/free-solid-svg-icons";
 
 type ImageRoom = {
-  model: RoomImage,
-  onChange: (file: File) => void,
-  onDelete: () => void
-}
+  model: RoomImage;
+  onChange: (file: File) => void;
+  onDelete: () => void;
+};
 
 const RoomImage: FC<ImageRoom> = ({ model, onChange, onDelete }) => {
-  const [image, setImage] = useState(model)
-  const [imgSrc, setImgSrc] = useState(image.path ? `http://localhost:8080${image.path}` : "")
+  const [image, setImage] = useState(model);
+  const [imgSrc, setImgSrc] = useState(
+    image.path ? `http://localhost:8080${image.path}` : ""
+  );
 
   return (
     <div className="div-image">
@@ -29,7 +31,7 @@ const RoomImage: FC<ImageRoom> = ({ model, onChange, onDelete }) => {
         <select
           value={image.type}
           onChange={(e) => {
-            setImage({ ...image, type: e.target.value })
+            setImage({ ...image, type: e.target.value });
           }}
         >
           <option value="normal">Normal</option>
@@ -39,35 +41,39 @@ const RoomImage: FC<ImageRoom> = ({ model, onChange, onDelete }) => {
       </FormField>
       <FormField label="Imagen" errorMessage="">
         <>
-          <Input type="file"
+          <Input
+            type="file"
             handleInput={(value: File) => {
-              onChange(value)
-              const filereader = new FileReader()
-              filereader.readAsDataURL(value)
+              onChange(value);
+              const filereader = new FileReader();
+              filereader.readAsDataURL(value);
               filereader.addEventListener("load", (e) => {
-                setImgSrc(e.target?.result ? e.target.result.toString() : "")
-              })
-              setImage({ ...image, file: value })
+                setImgSrc(e.target?.result ? e.target.result.toString() : "");
+              });
+              setImage({ ...image, file: value });
             }}
             value={""}
-            resetMessage={() => { }}
+            resetMessage={() => {}}
           />
-          {imgSrc == "" ?
+          {imgSrc == "" ? (
             <div className="div-image__divSI">
               <FontAwesomeIcon icon={faImage} />
               <span>Subir una Imagen</span>
-            </div> :
+            </div>
+          ) : (
             <img src={imgSrc} alt="" className="div-image__img" />
-          }
+          )}
         </>
       </FormField>
-      <Button handleClick={() => {
-        onDelete()
-      }}>
+      <Button
+        handleClick={() => {
+          onDelete();
+        }}
+      >
         Eliminar
       </Button>
     </div>
-  )
-}
+  );
+};
 
-export default RoomImage
+export default RoomImage;

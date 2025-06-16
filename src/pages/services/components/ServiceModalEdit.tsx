@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
-import Button from "../../common/components/Button";
-import Input from "../../common/components/Input";
-import FormField from "../../common/components/FormField";
+import Button from "../../../shared/components/Button";
+import Input from "../../../shared/components/Input";
+import FormField from "../../../shared/components/FormField";
 
 interface ServiceModalEditProps {
   service: Service;

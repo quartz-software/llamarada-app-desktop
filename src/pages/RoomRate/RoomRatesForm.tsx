@@ -1,22 +1,22 @@
 import { useNavigate, useSearchParams } from "react-router-dom";
-import Button from "../common/components/Button";
-import FormField from "../common/components/FormField"
-import Input from "../common/components/Input"
+import Button from "../../shared/components/Button";
+import FormField from "../../shared/components/FormField";
+import Input from "../../shared/components/Input";
 import { useEffect, useState } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faMinus, faPlus } from "@fortawesome/free-solid-svg-icons"
+import { faMinus, faPlus } from "@fortawesome/free-solid-svg-icons";
 
-import "./RoomRatesForm.css"
+import "./RoomRatesForm.css";
 
 type Room = {
-  id: string,
-  roomNumber: string,
-  type: string,
-  pricePerNight: number,
-  status: string,
-  capacity: number,
-  description: string
-}
+  id: string;
+  roomNumber: string;
+  type: string;
+  pricePerNight: number;
+  status: string;
+  capacity: number;
+  description: string;
+};
 
 type RoomRateData = {
   id: number;
@@ -24,51 +24,53 @@ type RoomRateData = {
   endDate: string;
   pricePerNight: string;
   isActive: boolean;
-  rooms: Room[]
+  rooms: Room[];
 };
 
-
 const RoomRatesForm = () => {
-
-  const navigate = useNavigate()
+  const navigate = useNavigate();
   const [params] = useSearchParams();
   const id = params.get("id");
 
   const [roomRateData, setRoomRateData] = useState<RoomRateData>({
     id: -1,
-    startDate: new Date().toISOString().split('T')[0],
-    endDate: new Date().toISOString().split('T')[0],
+    startDate: new Date().toISOString().split("T")[0],
+    endDate: new Date().toISOString().split("T")[0],
     pricePerNight: "",
     isActive: true,
-    rooms: []
-  })
+    rooms: [],
+  });
 
-  const [roomsData, setRoomsData] = useState<Room[]>([])
+  const [roomsData, setRoomsData] = useState<Room[]>([]);
 
-  const [roomFilter1, setRoomFilter1] = useState("")
-  const [roomFilter2, setRoomFilter2] = useState("")
+  const [roomFilter1, setRoomFilter1] = useState("");
+  const [roomFilter2, setRoomFilter2] = useState("");
 
   let rrd = roomRateData;
   function getData() {
     fetch(`/api/rates/${id}`)
-      .then(response => response.json())
-      .then(data => {
+      .then((response) => response.json())
+      .then((data) => {
         rrd = {
           id: parseInt(id!),
-          startDate: data.startDate.split('T')[0],
-          endDate: data.endDate.split('T')[0],
+          startDate: data.startDate.split("T")[0],
+          endDate: data.endDate.split("T")[0],
           pricePerNight: data.pricePerNight,
           isActive: data.isActive,
-          rooms: data.rooms
-        }
-        setRoomRateData(rrd)
-      })
+          rooms: data.rooms,
+        };
+        setRoomRateData(rrd);
+      });
   }
   function getRoomsData() {
     fetch("/api/rooms")
       .then((res) => res.json())
       .then((data: Room[]) => {
-        setRoomsData(data.filter((room: Room) => !rrd.rooms.some((rr) => rr.id === room.id)));
+        setRoomsData(
+          data.filter(
+            (room: Room) => !rrd.rooms.some((rr) => rr.id === room.id)
+          )
+        );
       })
       .catch((error) => {
         console.error(error.toString());
@@ -76,8 +78,8 @@ const RoomRatesForm = () => {
   }
 
   function postData() {
-    const id = roomRateData.id != -1 ? roomRateData.id : null
-    let url = `/api/rates/${id ? id : ""}`
+    const id = roomRateData.id != -1 ? roomRateData.id : null;
+    let url = `/api/rates/${id ? id : ""}`;
 
     let cont = {
       method: id == null ? "POST" : "PUT",
@@ -91,17 +93,17 @@ const RoomRatesForm = () => {
         pricePerNight: parseFloat(roomRateData.pricePerNight),
         isActive: roomRateData.isActive,
         rooms: roomRateData.rooms,
-      })
+      }),
     };
 
     fetch(url, cont)
       .then((res) => {
         if (res.status == 200 || res.status == 201) {
-          navigate("/rates")
+          navigate("/rates");
         }
       })
       .catch((error) => {
-        console.log(error)
+        console.log(error);
       });
   }
 
@@ -109,10 +111,10 @@ const RoomRatesForm = () => {
     if (search == "") return arr;
 
     let considences = arr.filter((room) => {
-      return room.type.includes(search) || room.roomNumber.includes(search)
-    })
+      return room.type.includes(search) || room.roomNumber.includes(search);
+    });
 
-    return considences
+    return considences;
   }
 
   useEffect(() => {
@@ -131,33 +133,39 @@ const RoomRatesForm = () => {
       });
       setRoomsData([]);
     };
-  }, [id])
+  }, [id]);
   return (
     <div>
-      <form className="form--rate"
+      <form
+        className="form--rate"
         onSubmit={(e) => {
-          e.preventDefault()
-        }}>
+          e.preventDefault();
+        }}
+      >
         <h1>Tarifa</h1>
         <FormField label="Precio" errorMessage="">
           <Input
             placeholder="Precio"
             type="number"
             handleInput={(value: string) => {
-              setRoomRateData({ ...roomRateData, pricePerNight: value })
+              setRoomRateData({ ...roomRateData, pricePerNight: value });
             }}
             value={roomRateData.pricePerNight}
-            resetMessage={() => { }} />
+            resetMessage={() => {}}
+          />
         </FormField>
         <FormField label="Estado" errorMessage="">
           <Input
             placeholder="Estado"
             type="checkbox"
             handleInput={(value: boolean) => {
-              setRoomRateData({ ...roomRateData, isActive: value ? true : false })
+              setRoomRateData({
+                ...roomRateData,
+                isActive: value ? true : false,
+              });
             }}
             value={roomRateData.isActive ? true : false}
-            resetMessage={() => { }}
+            resetMessage={() => {}}
           />
         </FormField>
         <FormField label="Fecha de inicio" errorMessage="">
@@ -165,10 +173,10 @@ const RoomRatesForm = () => {
             placeholder="Fecha de inicio"
             type="date"
             handleInput={(value: string) => {
-              setRoomRateData({ ...roomRateData, startDate: value })
+              setRoomRateData({ ...roomRateData, startDate: value });
             }}
             value={roomRateData.startDate}
-            resetMessage={() => { }}
+            resetMessage={() => {}}
           />
         </FormField>
         <FormField label="Fecha fin" errorMessage="">
@@ -176,47 +184,58 @@ const RoomRatesForm = () => {
             placeholder="Fecha fin"
             type="date"
             handleInput={(value: string) => {
-              setRoomRateData({ ...roomRateData, endDate: value })
+              setRoomRateData({ ...roomRateData, endDate: value });
             }}
             value={roomRateData.endDate}
-            resetMessage={() => { }}
+            resetMessage={() => {}}
           />
         </FormField>
         <h2>Habitaciones</h2>
         <FormField label="Habitaciones con tarifa" errorMessage="">
-          <Input placeholder="Buscar: Numero de habitacion / Tipo"
+          <Input
+            placeholder="Buscar: Numero de habitacion / Tipo"
             type="text"
             value={roomFilter1}
             handleInput={(value: string) => setRoomFilter1(value)}
-            resetMessage={() => { }} />
+            resetMessage={() => {}}
+          />
         </FormField>
         <FormField label="Habitaciones sin tarifa" errorMessage="">
-          <Input placeholder="Buscar: Numero de habitacion / Tipo"
+          <Input
+            placeholder="Buscar: Numero de habitacion / Tipo"
             type="text"
             value={roomFilter2}
             handleInput={(value: string) => setRoomFilter2(value)}
-            resetMessage={() => { }} />
+            resetMessage={() => {}}
+          />
         </FormField>
         <div className="div--rooms">
-          {searchRooms(roomFilter1, roomRateData.rooms).map((room: Room, index) => {
-            return (
-              <div key={index} className="room--item">
-                <div>
-                  <span>{index + 1}</span>
-                  <span>{room.roomNumber}</span>
-                  <span>{room.type}</span>
+          {searchRooms(roomFilter1, roomRateData.rooms).map(
+            (room: Room, index) => {
+              return (
+                <div key={index} className="room--item">
+                  <div>
+                    <span>{index + 1}</span>
+                    <span>{room.roomNumber}</span>
+                    <span>{room.type}</span>
+                  </div>
+                  <Button
+                    handleClick={() => {
+                      setRoomRateData({
+                        ...roomRateData,
+                        rooms: roomRateData.rooms.filter(
+                          (r: Room) => r.id !== room.id
+                        ),
+                      });
+                      setRoomsData([...roomsData, room]);
+                    }}
+                  >
+                    <FontAwesomeIcon icon={faMinus} />
+                  </Button>
                 </div>
-                <Button handleClick={() => {
-                  setRoomRateData({
-                    ...roomRateData, rooms: roomRateData.rooms.filter((r: Room) => r.id !== room.id)
-                  })
-                  setRoomsData([...roomsData, room])
-                }}>
-                  <FontAwesomeIcon icon={faMinus} />
-                </Button>
-              </div>
-            )
-          })}
+              );
+            }
+          )}
         </div>
         <div className="div--rooms">
           {searchRooms(roomFilter2, roomsData).map((room: Room, index) => {
@@ -227,32 +246,35 @@ const RoomRatesForm = () => {
                   <span>{room.roomNumber}</span>
                   <span>{room.type}</span>
                 </div>
-                <Button handleClick={() => {
-                  setRoomRateData({ ...roomRateData, rooms: [...roomRateData.rooms, room] })
-                  setRoomsData(roomsData.filter((r) => r.id !== room.id))
-                }}>
+                <Button
+                  handleClick={() => {
+                    setRoomRateData({
+                      ...roomRateData,
+                      rooms: [...roomRateData.rooms, room],
+                    });
+                    setRoomsData(roomsData.filter((r) => r.id !== room.id));
+                  }}
+                >
                   <FontAwesomeIcon icon={faPlus} />
                 </Button>
               </div>
-            )
+            );
           })}
         </div>
-        <Button
-          disabled={false}
-          handleClick={postData}>
+        <Button disabled={false} handleClick={postData}>
           Guardar
         </Button>
         <Button
           disabled={false}
           handleClick={() => {
-            navigate("/rates")
-          }}>
+            navigate("/rates");
+          }}
+        >
           Cancelar
         </Button>
       </form>
     </div>
-  )
+  );
+};
 
-}
-
-export default RoomRatesForm
+export default RoomRatesForm;

@@ -1,22 +1,12 @@
 import { useEffect, useState } from "react";
 import Input from "../../shared/components/Input";
 import Button from "../../shared/components/Button";
-// import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-// import { faPen } from "@fortawesome/free-solid-svg-icons";
-
 import "./Index.css";
 import { useNavigate } from "react-router-dom";
 import FormField from "../../shared/components/FormField";
-
-type Room = {
-  id: string;
-  roomNumber: string;
-  type: string;
-  pricePerNight: number;
-  status: string;
-  capacity: number;
-  description: string;
-};
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faPen } from "@fortawesome/free-solid-svg-icons";
+import { Habitacion } from "@/shared/types/db/habitacion";
 
 const Index = () => {
   const nav = useNavigate();
@@ -63,7 +53,7 @@ const Index = () => {
           <th>Numero</th>
           <th>Tipo</th>
           <th>Capacidad</th>
-          <th>Precio/noche</th>
+          {/* <th>Precio/noche</th> */}
           <th>Estado</th>
           <th></th>
         </thead>
@@ -71,15 +61,23 @@ const Index = () => {
           <div className="div--nd">No se encomtraron cuartos</div>
         ) : (
           <tbody>
-            {/* {roomsData.map((habitacion: Room) => {
+            {roomsData.map((habitacion: Habitacion) => {
               return (
                 <tr>
                   <td>{habitacion.id}</td>
-                  <td>{habitacion.roomNumber}</td>
-                  <td>{habitacion.type}</td>
-                  <td>{habitacion.capacity}</td>
-                  <td>{habitacion.pricePerNight}</td>
-                  <td>{habitacion.status}</td>
+                  <td>{habitacion.numeroHabitacion}</td>
+                  <td>
+                    {habitacion.tipo && habitacion.tipo.nombre
+                      ? habitacion.tipo.nombre.charAt(0).toUpperCase() + habitacion.tipo.nombre.slice(1)
+                      : ""}
+                  </td>
+                  <td>{habitacion.capacidad}</td>
+                  {/* <td>{habitacion.pricePerNight}</td> */}
+                  <td>
+                    {habitacion.estado && habitacion.estado.nombre
+                      ? habitacion.estado.nombre.charAt(0).toUpperCase() + habitacion.estado.nombre.slice(1)
+                      : ""}
+                  </td>
                   <td>
                     <Button
                       disabled={false}
@@ -92,7 +90,7 @@ const Index = () => {
                   </td>
                 </tr>
               );
-            })} */}
+            })}
           </tbody>
         )}
       </table>

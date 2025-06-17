@@ -53,7 +53,7 @@ const RoomImage: FC<ImageRoom> = ({ model, onChange, onDelete }) => {
               setImage({ ...image, file: value });
             }}
             value={""}
-            resetMessage={() => {}}
+            resetMessage={() => { }}
           />
           {imgSrc == "" ? (
             <div className="div-image__divSI">

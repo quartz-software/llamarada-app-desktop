@@ -23,7 +23,7 @@
   font-size: 0.8em;
 }
 
-.room--card > div {
+.room--card>div {
   display: flex;
 }
 
@@ -37,34 +37,34 @@
   border-radius: 4px;
 }
 
-.room--card.available {
+.room--card.disponible {
   border-color: #4fd22e;
 }
 
-.available .tag {
+.disponible .tag {
   background-color: #4fd22e;
 }
 
-.room--card.cleaning {
+.room--card.limpieza {
   border-color: #017db0;
 }
 
-.cleaning .tag {
+.limpieza .tag {
   background-color: #017db0;
 }
 
-.room--card.maintainance {
+.room--card.mantenimiento {
   border-color: #e3a327;
 }
 
-.maintainance .tag {
+.mantenimineto .tag {
   background-color: #e3a327;
 }
 
-.room--card.occupied {
+.room--card.ocupado {
   border-color: #e32727;
 }
 
-.occupied .tag {
+.ocupado .tag {
   background-color: #e32727;
 }

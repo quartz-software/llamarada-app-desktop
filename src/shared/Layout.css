@@ -63,7 +63,7 @@
   background-color: #ac2020;
 }
 
-.navbar__link > i {
+.navbar__link>i {
   height: 1.5rem;
   aspect-ratio: 1.25/1;
 
@@ -75,12 +75,12 @@
 }
 
 #content {
-  background-color: #252525;
+  background-color: #ffffff;
   width: 100%;
   min-height: 100vh;
 }
 
-#content > div {
+#content>div {
   padding: 1rem;
   max-width: 1200px;
   width: 90%;

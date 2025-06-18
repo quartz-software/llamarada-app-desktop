@@ -7,113 +7,93 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faMinus, faPlus } from "@fortawesome/free-solid-svg-icons";
 
 import "./RoomRatesForm.css";
-
-type Room = {
-  id: string;
-  roomNumber: string;
-  type: string;
-  pricePerNight: number;
-  status: string;
-  capacity: number;
-  description: string;
-};
-
-type RoomRateData = {
-  id: number;
-  startDate: string;
-  endDate: string;
-  pricePerNight: string;
-  isActive: boolean;
-  rooms: Room[];
-};
+import { Tarifa } from "@/shared/types/db/tarifa";
+import { Habitacion } from "@/shared/types/db/habitacion";
 
 const RoomRatesForm = () => {
   const navigate = useNavigate();
   const [params] = useSearchParams();
   const id = params.get("id");
 
-  const [roomRateData, setRoomRateData] = useState<RoomRateData>({
+  const [roomRateData, setRoomRateData] = useState<Tarifa>({
     id: -1,
-    startDate: new Date().toISOString().split("T")[0],
-    endDate: new Date().toISOString().split("T")[0],
-    pricePerNight: "",
-    isActive: true,
-    rooms: [],
+    fechaInicio: new Date(),
+    fechaFin: new Date(),
+    precio: 0,
+    activo: true,
+    habitaciones: [],
   });
 
-  const [roomsData, setRoomsData] = useState<Room[]>([]);
+  const [roomsData, setRoomsData] = useState<Habitacion[]>([]);
 
   const [roomFilter1, setRoomFilter1] = useState("");
   const [roomFilter2, setRoomFilter2] = useState("");
 
-  let rrd = roomRateData;
-  function getData() {
-    fetch(`/api/rates/${id}`)
-      .then((response) => response.json())
-      .then((data) => {
-        rrd = {
-          id: parseInt(id!),
-          startDate: data.startDate.split("T")[0],
-          endDate: data.endDate.split("T")[0],
-          pricePerNight: data.pricePerNight,
-          isActive: data.isActive,
-          rooms: data.rooms,
-        };
-        setRoomRateData(rrd);
-      });
-  }
-  function getRoomsData() {
-    fetch("/api/rooms")
-      .then((res) => res.json())
-      .then((data: Room[]) => {
-        setRoomsData(
-          data.filter(
-            (room: Room) => !rrd.rooms.some((rr) => rr.id === room.id)
-          )
-        );
+  async function getData() {
+    try {
+      const res = await fetch(`/api/rates/${id}`)
+      const data = await res.json()
+      setRoomRateData(data);
+
+      setTimeout(() => {
+        getRoomsData(data)
       })
-      .catch((error) => {
-        console.error(error.toString());
-      });
+
+    } catch (error) {
+      console.error(error);
+    }
+  }
+  async function getRoomsData(tarifa: Tarifa) {
+    try {
+      const res = await fetch("/api/rooms")
+      const data = await res.json()
+      setRoomsData(
+        data.filter(
+          (room: Habitacion) => !tarifa.habitaciones?.some((rr) => rr.id === room.id)
+        )
+      );
+    } catch (error) {
+      console.error(error)
+    }
   }
 
-  function postData() {
-    const id = roomRateData.id != -1 ? roomRateData.id : null;
-    let url = `/api/rates/${id ? id : ""}`;
+  async function postData() {
+    try {
+      const id = roomRateData.id != -1 ? roomRateData.id : null;
+      let url = `/api/rates/${id ? id : ""}`;
 
-    let cont = {
-      method: id == null ? "POST" : "PUT",
 
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        startDate: roomRateData.startDate,
-        endDate: roomRateData.endDate,
-        pricePerNight: parseFloat(roomRateData.pricePerNight),
-        isActive: roomRateData.isActive,
-        rooms: roomRateData.rooms,
-      }),
-    };
+      let cont = {
+        method: id == null ? "POST" : "PUT",
 
-    fetch(url, cont)
-      .then((res) => {
-        if (res.status == 200 || res.status == 201) {
-          navigate("/rates");
-        }
-      })
-      .catch((error) => {
-        console.log(error);
-      });
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          fechaInicio: roomRateData.fechaInicio,
+          fechaFin: roomRateData.fechaFin,
+          precio: roomRateData.precio,
+          activo: roomRateData.activo,
+          rooms: roomRateData.habitaciones?.map((h) => h.id),
+        }),
+      };
+      console.log(cont.body);
+
+      const res = await fetch(url, cont)
+      if (res.status == 201 || res.status == 204) {
+        navigate("/rates");
+      }
+    } catch (error) {
+      console.error(error);
+    }
   }
 
-  function searchRooms(search: string, arr: Room[]) {
+  function searchRooms(search: string, arr: Habitacion[]) {
     if (search == "") return arr;
 
     let considences = arr.filter((room) => {
-      return room.type.includes(search) || room.roomNumber.includes(search);
+      return room.tipo?.nombre.includes(search) || room.numeroHabitacion.includes(search);
     });
-
     return considences;
   }
 
@@ -121,15 +101,14 @@ const RoomRatesForm = () => {
     if (id != null) {
       getData();
     }
-    getRoomsData();
     return () => {
       setRoomRateData({
         id: -1,
-        startDate: new Date().toISOString().split("T")[0],
-        endDate: new Date().toISOString().split("T")[0],
-        pricePerNight: "",
-        isActive: true,
-        rooms: [],
+        fechaInicio: new Date(),
+        fechaFin: new Date(),
+        precio: 0,
+        activo: true,
+        habitaciones: [],
       });
       setRoomsData([]);
     };
@@ -148,10 +127,10 @@ const RoomRatesForm = () => {
             placeholder="Precio"
             type="number"
             handleInput={(value: string) => {
-              setRoomRateData({ ...roomRateData, pricePerNight: value });
+              setRoomRateData({ ...roomRateData, precio: Number(value) });
             }}
-            value={roomRateData.pricePerNight}
-            resetMessage={() => {}}
+            value={roomRateData.precio.toString()}
+            resetMessage={() => { }}
           />
         </FormField>
         <FormField label="Estado" errorMessage="">
@@ -161,11 +140,11 @@ const RoomRatesForm = () => {
             handleInput={(value: boolean) => {
               setRoomRateData({
                 ...roomRateData,
-                isActive: value ? true : false,
+                activo: value,
               });
             }}
-            value={roomRateData.isActive ? true : false}
-            resetMessage={() => {}}
+            value={roomRateData.activo}
+            resetMessage={() => { }}
           />
         </FormField>
         <FormField label="Fecha de inicio" errorMessage="">
@@ -173,21 +152,21 @@ const RoomRatesForm = () => {
             placeholder="Fecha de inicio"
             type="date"
             handleInput={(value: string) => {
-              setRoomRateData({ ...roomRateData, startDate: value });
+              setRoomRateData({ ...roomRateData, fechaInicio: new Date(value) });
             }}
-            value={roomRateData.startDate}
-            resetMessage={() => {}}
+            value={roomRateData.fechaInicio ? new Date(roomRateData.fechaInicio).toISOString().split("T")[0] : ""}
+            resetMessage={() => { }}
           />
         </FormField>
         <FormField label="Fecha fin" errorMessage="">
           <Input
             placeholder="Fecha fin"
             type="date"
-            handleInput={(value: string) => {
-              setRoomRateData({ ...roomRateData, endDate: value });
+            handleInput={(value: Date) => {
+              setRoomRateData({ ...roomRateData, fechaFin: value });
             }}
-            value={roomRateData.endDate}
-            resetMessage={() => {}}
+            value={roomRateData.fechaFin ? new Date(roomRateData.fechaFin).toISOString().split("T")[0] : ""}
+            resetMessage={() => { }}
           />
         </FormField>
         <h2>Habitaciones</h2>
@@ -197,7 +176,7 @@ const RoomRatesForm = () => {
             type="text"
             value={roomFilter1}
             handleInput={(value: string) => setRoomFilter1(value)}
-            resetMessage={() => {}}
+            resetMessage={() => { }}
           />
         </FormField>
         <FormField label="Habitaciones sin tarifa" errorMessage="">
@@ -206,25 +185,25 @@ const RoomRatesForm = () => {
             type="text"
             value={roomFilter2}
             handleInput={(value: string) => setRoomFilter2(value)}
-            resetMessage={() => {}}
+            resetMessage={() => { }}
           />
         </FormField>
         <div className="div--rooms">
-          {searchRooms(roomFilter1, roomRateData.rooms).map(
-            (room: Room, index) => {
+          {searchRooms(roomFilter1, roomRateData.habitaciones ?? []).map(
+            (room: Habitacion, index) => {
               return (
                 <div key={index} className="room--item">
                   <div>
                     <span>{index + 1}</span>
-                    <span>{room.roomNumber}</span>
-                    <span>{room.type}</span>
+                    <span>{room.numeroHabitacion}</span>
+                    <span>{room.tipo?.nombre}</span>
                   </div>
                   <Button
                     handleClick={() => {
                       setRoomRateData({
                         ...roomRateData,
-                        rooms: roomRateData.rooms.filter(
-                          (r: Room) => r.id !== room.id
+                        habitaciones: (roomRateData.habitaciones ?? []).filter(
+                          (r) => r.id !== room.id
                         ),
                       });
                       setRoomsData([...roomsData, room]);
@@ -238,19 +217,19 @@ const RoomRatesForm = () => {
           )}
         </div>
         <div className="div--rooms">
-          {searchRooms(roomFilter2, roomsData).map((room: Room, index) => {
+          {searchRooms(roomFilter2, roomsData).map((room: Habitacion, index) => {
             return (
               <div key={index} className="room--item">
                 <div>
                   <span>{index + 1}</span>
-                  <span>{room.roomNumber}</span>
-                  <span>{room.type}</span>
+                  <span>{room.numeroHabitacion}</span>
+                  <span>{room.tipo?.nombre}</span>
                 </div>
                 <Button
                   handleClick={() => {
                     setRoomRateData({
                       ...roomRateData,
-                      rooms: [...roomRateData.rooms, room],
+                      habitaciones: [...roomRateData.habitaciones ?? [], room],
                     });
                     setRoomsData(roomsData.filter((r) => r.id !== room.id));
                   }}

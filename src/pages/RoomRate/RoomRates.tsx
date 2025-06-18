@@ -6,16 +6,11 @@ import { useNavigate } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faPen } from "@fortawesome/free-solid-svg-icons";
 import "./RoomRates.css";
+import { Tarifa } from "@/shared/types/db/tarifa";
 
-type RoomRate = {
-  id: number;
-  startDate: string;
-  endDate: string;
-  pricePerNight: number;
-  isActive: boolean;
-};
-
-const formatDate = (isoDate: string) => {
+const formatDate = (dateData?: Date) => {
+  if (!dateData) return "";
+  const isoDate = new Date(dateData).toISOString()
   let date = isoDate.split("T")[0];
   let dateParts = date.split("-");
 
@@ -24,7 +19,7 @@ const formatDate = (isoDate: string) => {
 
 const RoomRates = () => {
   const nav = useNavigate();
-  const [roomRatesData, setRoomRatesData] = useState([]);
+  const [roomRatesData, setRoomRatesData] = useState<Tarifa[]>([]);
 
   async function getData() {
     try {
@@ -32,7 +27,6 @@ const RoomRates = () => {
       const res = await fetch(url)
       const data = await res.json()
       setRoomRatesData(data);
-
     } catch (error) {
       console.error(error);
     }
@@ -77,19 +71,19 @@ const RoomRates = () => {
           <div className="div--nd">No se encomtraron cuartos</div>
         ) : (
           <tbody>
-            {roomRatesData.map((roomRate: RoomRate) => {
+            {roomRatesData.map((tarifa: Tarifa, index) => {
               return (
-                <tr>
-                  <td>{roomRate.id}</td>
-                  <td>{formatDate(roomRate.startDate)}</td>
-                  <td>{formatDate(roomRate.endDate)}</td>
-                  <td>{roomRate.pricePerNight}</td>
-                  <td>{roomRate.isActive ? "Activo" : "Deshabilitado"}</td>
+                <tr key={index}>
+                  <td>{tarifa.id}</td>
+                  <td>{formatDate(tarifa.fechaInicio)}</td>
+                  <td>{formatDate(tarifa.fechaFin)}</td>
+                  <td>{tarifa.precio}</td>
+                  <td>{tarifa.activo ? "Activo" : "Deshabilitado"}</td>
                   <td>
                     <Button
                       disabled={false}
                       handleClick={() => {
-                        nav(`/rates/edit?id=${roomRate.id}`);
+                        nav(`/rates/edit?id=${tarifa.id}`);
                       }}
                     >
                       <FontAwesomeIcon icon={faPen} />

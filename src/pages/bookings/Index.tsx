@@ -1,24 +1,27 @@
-import Input from "../../shared/components/Input";
 import CardRoom from "../bookings/components/CardRoom";
-
 import { useEffect, useState } from "react";
-
-import "./Index.css";
-import FormField from "../../shared/components/FormField";
 import { Habitacion } from "@/shared/types/db/habitacion";
+import { Popover, PopoverContent, PopoverTrigger } from "@/shared/components/ui/popover";
+import { Button } from "@/shared/components/ui/button";
+import { cn } from "@/shared/lib/utils";
+import { DateRange } from "react-day-picker";
+import { format } from "date-fns";
+import { CalendarIcon } from "lucide-react";
+import { Calendar } from "@/shared/components/ui/calendar";
 
 const Habitaciones = () => {
+
+  const [dateRange, setDateRange] = useState<DateRange | undefined>();
   const [roomsData, setRoomsData] = useState<Habitacion[]>([]);
-  const [search, setSearch] = useState({
-    text: "",
-    dateIn: "",
-    // new Date().toISOString().split('T')[0]
-    dateOut: "",
-  });
 
   async function getData() {
     try {
-      const url = "/api/rooms";
+      const startDate = dateRange?.from?.toISOString().split('T')[0]
+      const endDate = dateRange?.from?.toISOString().split('T')[0]
+      const params = `?startDate=${startDate}&endDate=${endDate}`
+      const url =
+        "/api/bookings/available" +
+        (dateRange && dateRange.from && dateRange.to ? params : "");
       const cont = {
         method: "GET",
         headers: {
@@ -33,78 +36,49 @@ const Habitaciones = () => {
       console.error(error);
     }
   }
-  function changeStatus(room: Habitacion) {
-    room.estado!.nombre = "disponible";
-    return room;
-  }
-
-  function fileterRooms(arr: Habitacion[]) {
-    if (search.dateIn == "" || search.dateOut == "") return arr;
-    const checkInDate = new Date(search.dateIn);
-    const checkOutDate = new Date(search.dateOut);
-    const considences = arr.filter((room) => {
-      return Array.isArray(room.reservas) && room.reservas.every((booking) => {
-        const bookingCheckIn = new Date(booking.checkIn);
-        const bookingCheckOut = new Date(booking.checkOut);
-
-        return checkOutDate <= bookingCheckIn || checkInDate >= bookingCheckOut;
-      });
-    });
-
-    return considences;
-  }
 
   useEffect(() => {
     getData();
-  }, []);
+  }, [dateRange]);
 
   return (
-    <div>
-      <h1>Reservaciones</h1>
-      <h3>Filtros</h3>
-      <div className="div--filter">
-        <FormField label="Buscar" errorMessage="">
-          <Input
-            placeholder="Buscar"
-            type="text"
-            resetMessage={() => { }}
-            value={search.text}
-            handleInput={(value: string) => { }}
+    <div className="space-y-3">
+      <h1 className="font-bold text-2xl">Reservaciones</h1>
+      <h3 className="font-bold ">Busqueda</h3>
+      <Popover>
+        <PopoverTrigger asChild>
+          <Button
+            variant={"outline"}
+            className={cn(
+              "min-w-2xs pl-3 text-left font-normal",
+              dateRange && "text-muted-foreground"
+            )}
+          >
+            {dateRange && dateRange.from && dateRange.to ?
+              format(dateRange.from, "PPP") + " - " + format(dateRange.to, "PPP") :
+              <span>CheckIn - CheckOut</span>}
+            <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
+          </Button>
+        </PopoverTrigger>
+        <PopoverContent className="w-auto p-0" align="start">
+          <Calendar
+            mode="range"
+            numberOfMonths={2}
+            selected={dateRange}
+            onSelect={(date) => setDateRange(date)}
+            disabled={(date) =>
+              date <= new Date()
+            }
+            captionLayout="label"
           />
-        </FormField>
-        <FormField label="CheckIn" errorMessage="">
-          <Input
-            placeholder="CheckIn"
-            type="date"
-            resetMessage={() => { }}
-            value={search.dateIn}
-            handleInput={(value: string) => {
-              setSearch({ ...search, dateIn: value });
-            }}
-          />
-        </FormField>
-        <FormField label="CheckOut" errorMessage="">
-          <Input
-            placeholder="CheckOut"
-            type="date"
-            resetMessage={() => { }}
-            value={search.dateOut}
-            handleInput={(value: string) => {
-              setSearch({ ...search, dateOut: value });
-            }}
-          />
-        </FormField>
-      </div>
-      <div className="content--rooms">
-        {fileterRooms(roomsData).map((room, index) => {
+        </PopoverContent>
+      </Popover>
+      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-4">
+        {roomsData.map((room, index) => {
           return (
             <CardRoom
               key={index}
-              room={
-                search.dateIn == "" || search.dateOut == ""
-                  ? room
-                  : changeStatus(room)
-              }
+              room={room}
             />
           );
         })}

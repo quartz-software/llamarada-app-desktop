@@ -49,50 +49,58 @@ const Index = () => {
       </div>
       <table className="table--rooms">
         <thead>
-          <th>Id</th>
-          <th>Numero</th>
-          <th>Tipo</th>
-          <th>Capacidad</th>
-          {/* <th>Precio/noche</th> */}
-          <th>Estado</th>
-          <th></th>
+          <tr>
+            <th>Id</th>
+            <th>Numero</th>
+            <th>Tipo</th>
+            <th>Capacidad</th>
+            {/* <th>Precio/noche</th> */}
+            <th>Estado</th>
+            <th></th>
+          </tr>
         </thead>
-        {roomsData.length == 0 ? (
-          <div className="div--nd">No se encomtraron cuartos</div>
-        ) : (
-          <tbody>
-            {roomsData.map((habitacion: Habitacion) => {
-              return (
-                <tr>
-                  <td>{habitacion.id}</td>
-                  <td>{habitacion.numeroHabitacion}</td>
-                  <td>
-                    {habitacion.tipo && habitacion.tipo.nombre
-                      ? habitacion.tipo.nombre.charAt(0).toUpperCase() + habitacion.tipo.nombre.slice(1)
-                      : ""}
-                  </td>
-                  <td>{habitacion.capacidad}</td>
-                  {/* <td>{habitacion.pricePerNight}</td> */}
-                  <td>
-                    {habitacion.estado && habitacion.estado.nombre
-                      ? habitacion.estado.nombre.charAt(0).toUpperCase() + habitacion.estado.nombre.slice(1)
-                      : ""}
-                  </td>
-                  <td>
-                    <Button
-                      disabled={false}
-                      handleClick={() => {
-                        nav(`/rooms/form?id=${habitacion.id}`);
-                      }}
-                    >
-                      <FontAwesomeIcon icon={faPen} />
-                    </Button>
-                  </td>
-                </tr>
-              );
-            })}
-          </tbody>
-        )}
+        <tbody>
+          {roomsData.length == 0 ? (
+            <tr >
+              <td>
+                <div className="div--nd">No se encomtraron cuartos</div>
+              </td>
+            </tr>
+          ) : (
+            <>
+              {roomsData.map((habitacion: Habitacion, index) => {
+                return (
+                  <tr key={index}>
+                    <td>{habitacion.id}</td>
+                    <td>{habitacion.numeroHabitacion}</td>
+                    <td>
+                      {habitacion.tipo && habitacion.tipo.nombre
+                        ? habitacion.tipo.nombre.charAt(0).toUpperCase() + habitacion.tipo.nombre.slice(1)
+                        : ""}
+                    </td>
+                    <td>{habitacion.capacidad}</td>
+                    {/* <td>{habitacion.pricePerNight}</td> */}
+                    <td>
+                      {habitacion.estado && habitacion.estado.nombre
+                        ? habitacion.estado.nombre.charAt(0).toUpperCase() + habitacion.estado.nombre.slice(1)
+                        : ""}
+                    </td>
+                    <td>
+                      <Button
+                        disabled={false}
+                        handleClick={() => {
+                          nav(`/rooms/form?id=${habitacion.id}`);
+                        }}
+                      >
+                        <FontAwesomeIcon icon={faPen} />
+                      </Button>
+                    </td>
+                  </tr>
+                );
+              })}
+            </>
+          )}
+        </tbody>
       </table>
     </div>
   );

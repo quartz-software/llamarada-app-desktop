@@ -19,15 +19,15 @@ const Cliente_Formulario_Modal: FC<ModalClienteProps> = ({ reloadClients }) => {
   const [open, setOpen] = useState(false)
 
   const ClienteUsuarioCreateSchema = z.object({
-    client: ClienteCreateSchema,
-    user: UsuarioCreateSchema,
+    cliente: ClienteCreateSchema,
+    usuario: UsuarioCreateSchema,
   })
   type ClienteType = z.infer<typeof ClienteUsuarioCreateSchema>
 
   const form = useForm<ClienteType>({
     resolver: zodResolver(ClienteUsuarioCreateSchema),
     defaultValues: {
-      client: {
+      cliente: {
         dni: "",
         nombre1: "",
         nombre2: "",
@@ -37,7 +37,7 @@ const Cliente_Formulario_Modal: FC<ModalClienteProps> = ({ reloadClients }) => {
         pais: "",
         idUsuario: -1,
       },
-      user: {
+      usuario: {
         correo: "",
         password: "",
       }

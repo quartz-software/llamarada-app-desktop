@@ -1,261 +1,209 @@
 import { FC, useState } from "react";
-import Button from "../../../shared/components/Button";
-import FormField from "../../../shared/components/FormField";
-import Input from "../../../shared/components/Input";
-import "./ModalClientForm.css";
+import { z } from "zod";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { ClienteCreateSchema } from "@/shared/schemas/models/cliente";
+import { UsuarioCreateSchema } from "@/shared/schemas/models/usuario";
+import { useForm } from "react-hook-form";
+import { toast } from "sonner";
+import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from "@/shared/components/ui/dialog";
+import { Button } from "@/shared/components/ui/button";
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/shared/components/ui/form";
+import { Input } from "@/shared/components/ui/input";
+import { UserPlus } from "lucide-react";
 
-type Props = {
-  onClose: Function;
+type ModalClienteProps = {
+  reloadClients: () => void;
 };
 
-const Cliente_Formulario_Modal: FC<Props> = ({ onClose }) => {
-  const [userData, setUserData] = useState({
-    email: "",
-    password: "",
-    role: "client",
-  });
-  const [clientData, setClientData] = useState<Client>({
-    id: 0,
-    country: "",
-    user: {
-      id: 0,
-      firstname: "",
-      middlename: "",
-      lastname1: "",
-      lastname2: "",
-      phone: "",
-      dni: "",
-      documentType: "",
-      address: "",
-    },
-  });
+const Cliente_Formulario_Modal: FC<ModalClienteProps> = ({ reloadClients }) => {
+  const [open, setOpen] = useState(false)
 
-  function postDataClient() {
-    let url = "/api/clients";
-    let cont = {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
+  const ClienteUsuarioCreateSchema = z.object({
+    client: ClienteCreateSchema,
+    user: UsuarioCreateSchema,
+  })
+  type ClienteType = z.infer<typeof ClienteUsuarioCreateSchema>
+
+  const form = useForm<ClienteType>({
+    resolver: zodResolver(ClienteUsuarioCreateSchema),
+    defaultValues: {
+      client: {
+        dni: "",
+        nombre1: "",
+        nombre2: "",
+        apellido1: "",
+        apellido2: "",
+        telefono: "",
+        pais: "",
+        idUsuario: -1,
       },
-      body: JSON.stringify({
-        client: {
-          country: clientData.country,
-        },
-        user: {
-          address: clientData.user?.address,
-          documentType: clientData.user?.documentType,
-          firstname: clientData.user?.firstname,
-          middlename: clientData.user?.middlename,
-          lastname1: clientData.user?.lastname1,
-          lastname2: clientData.user?.lastname2,
-          phone: clientData.user?.phone,
-          dni: clientData.user?.dni,
+      user: {
+        correo: "",
+        password: "",
+      }
+    }
+  })
+  const {
+    handleSubmit,
+    control,
+    reset,
+    formState: { isSubmitting }
+  } = form
 
-          email: userData.email,
-          password: userData.password,
-          role: "client",
+  const onCreateClient = async (data: ClienteType) => {
+    try {
+      let url = "/api/clients";
+      let cont = {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
         },
-      }),
-    };
+        body: JSON.stringify(data),
+      };
 
-    fetch(url, cont)
-      .then((res) => {
-        if (res.status == 201) {
-          onClose();
-        }
-      })
-      .catch((error) => {
-        console.error(error);
-      });
+      const res = await fetch(url, cont)
+      if (res.status === 201) {
+        toast.success("Cliente agregado correcatamente")
+        setOpen(false)
+        reset()
+        reloadClients()
+      }
+      else {
+        toast.error("Hubo un problema al agregar al cliente")
+      }
+    } catch (error) {
+      console.error(error);
+    }
   }
 
   return (
-    <div className="modal-overlay">
-      <div className="modal-container">
-        <div className="modal-content">
-          <h2>Nuevo Cliente</h2>
-          <form
-            onSubmit={(e) => {
-              e.preventDefault();
-            }}
-          >
-            <FormField label="Primer nombre:" errorMessage="">
-              <Input
-                type="text"
-                placeholder="Primer nombre"
-                handleInput={(value: string) => {
-                  setClientData({
-                    ...clientData,
-                    user: {
-                      ...clientData.user!,
-                      firstname: value,
-                    },
-                  });
-                }}
-                value={clientData.user ? clientData.user.firstname : ""}
-                resetMessage={() => {}}
-              />
-            </FormField>
-            <FormField label="Segundo nombre:" errorMessage="">
-              <Input
-                type="text"
-                placeholder="Segundo nombre"
-                handleInput={(value: string) => {
-                  setClientData({
-                    ...clientData,
-                    user: {
-                      ...clientData.user!,
-                      middlename: value,
-                    },
-                  });
-                }}
-                value={clientData.user ? clientData.user.middlename ?? "" : ""}
-                resetMessage={() => {}}
-              />
-            </FormField>
-            <FormField label="Primer apellido:" errorMessage="">
-              <Input
-                type="text"
-                placeholder="Primer Apellido"
-                handleInput={(value: string) => {
-                  setClientData({
-                    ...clientData,
-                    user: {
-                      ...clientData.user!,
-                      lastname1: value,
-                    },
-                  });
-                }}
-                value={clientData.user ? clientData.user.lastname1 : ""}
-                resetMessage={() => {}}
-              />
-            </FormField>
-            <FormField label="Segundo apellido:" errorMessage="">
-              <Input
-                type="text"
-                placeholder="Segundo Apellido"
-                handleInput={(value: string) => {
-                  setClientData({
-                    ...clientData,
-                    user: {
-                      ...clientData.user!,
-                      lastname2: value,
-                    },
-                  });
-                }}
-                value={clientData.user ? clientData.user.lastname2 ?? "" : ""}
-                resetMessage={() => {}}
-              />
-            </FormField>
-            <FormField label="Email:" errorMessage="">
-              <Input
-                placeholder="Correo Electronico"
-                handleInput={(value: string) => {
-                  setUserData({ ...userData, email: value });
-                }}
-                type="text"
-                value={userData.email}
-                resetMessage={() => {}}
-              />
-            </FormField>
-            <FormField label="Contraseña:" errorMessage="">
-              <Input
-                type="text"
-                placeholder="Contraseña"
-                handleInput={(value: string) => {
-                  setUserData({ ...userData, password: value });
-                }}
-                value={userData.password}
-                resetMessage={() => {}}
-              />
-            </FormField>
-            <FormField label="Celular:" errorMessage="">
-              <Input
-                type="text"
-                placeholder="Número de celular"
-                handleInput={(value: string) => {
-                  setClientData({
-                    ...clientData,
-                    user: {
-                      ...clientData.user!,
-                      phone: value,
-                    },
-                  });
-                }}
-                value={clientData.user ? clientData.user.phone : ""}
-                resetMessage={() => {}}
-              />
-            </FormField>
-            <FormField label="País:" errorMessage="">
-              <Input
-                type="text"
-                placeholder="País de procedencia"
-                handleInput={(value: string) => {
-                  setClientData({ ...clientData, country: value });
-                }}
-                value={clientData.country}
-                resetMessage={() => {}}
-              />
-            </FormField>
-            <FormField label="DNI:" errorMessage="">
-              <Input
-                type="text"
-                placeholder="DNI"
-                handleInput={(value: string) => {
-                  setClientData({
-                    ...clientData,
-                    user: { ...clientData.user!, dni: value },
-                  });
-                }}
-                value={clientData.user ? clientData.user.dni : ""}
-                resetMessage={() => {}}
-              />
-            </FormField>
-            <FormField label="Tipo de documento:" errorMessage="">
-              <Input
-                type="text"
-                placeholder="Tipo de documento"
-                handleInput={(value: string) => {
-                  setClientData({
-                    ...clientData,
-                    user: { ...clientData.user!, documentType: value },
-                  });
-                }}
-                value={clientData.user ? clientData.user.documentType : ""}
-                resetMessage={() => {}}
-              />
-            </FormField>
-            <FormField label="Dirección:" errorMessage="">
-              <Input
-                type="text"
-                placeholder="Dirección"
-                handleInput={(value: string) => {
-                  setClientData({
-                    ...clientData,
-                    user: { ...clientData.user!, address: value },
-                  });
-                }}
-                value={clientData.user ? clientData.user.address : ""}
-                resetMessage={() => {}}
-              />
-            </FormField>
-            <div className="div--btns">
-              <Button
-                disabled={false}
-                handleClick={() => {
-                  onClose();
-                }}
-              >
-                Cerrar
+    <Dialog open={open} onOpenChange={setOpen}>
+      <DialogTrigger asChild>
+        <Button variant="default" size="icon">
+          <UserPlus />
+        </Button>
+      </DialogTrigger>
+      <DialogContent className="sm:max-w-[425px]">
+        <DialogHeader>
+          <DialogTitle>Añade un nuevo cliente</DialogTitle>
+          <DialogDescription>
+            Añade un nuevo cliente. Haz clic en "Agregar cliente" para guardar.
+          </DialogDescription>
+        </DialogHeader>
+        <Form {...form}>
+          <form onSubmit={handleSubmit(onCreateClient)} className="space-y-4">
+            <FormField
+              control={control}
+              name="client.dni"
+              render={({ field }) => (
+                <FormItem className="grid grid-cols-4 items-center gap-4">
+                  <FormLabel className="text-right">CI</FormLabel>
+                  <div className="col-span-3">
+                    <FormControl>
+                      <Input {...field} type="text" placeholder="Celula de Identidad" />
+                    </FormControl>
+                    <FormMessage />
+                  </div>
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={control}
+              name="client.nombre1"
+              render={({ field }) => (
+                <FormItem className="grid grid-cols-4 items-center gap-4">
+                  <FormLabel className="text-right">Nombre</FormLabel>
+                  <div className="col-span-3">
+                    <FormControl>
+                      <Input
+                        {...field}
+                        type="text"
+                        placeholder="Nombre cliente"
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </div>
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={control}
+              name="client.apellido1"
+              render={({ field }) => (
+                <FormItem className="grid grid-cols-4 items-center gap-4">
+                  <FormLabel className="text-right">Apellido</FormLabel>
+                  <div className="col-span-3">
+                    <FormControl>
+                      <Input
+                        {...field}
+                        type="text"
+                        placeholder="Apellido cliente"
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </div>
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={control}
+              name="client.telefono"
+              render={({ field }) => (
+                <FormItem className="grid grid-cols-4 items-center gap-4">
+                  <FormLabel className="text-right">Telefono</FormLabel>
+                  <div className="col-span-3">
+                    <FormControl>
+                      <Input
+                        {...field}
+                        type="tel"
+                        placeholder="Numero de telefono"
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </div>
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={control}
+              name="user.correo"
+              render={({ field }) => (
+                <FormItem className="grid grid-cols-4 items-center gap-4">
+                  <FormLabel className="text-right">Correo</FormLabel>
+                  <div className="col-span-3">
+                    <FormControl>
+                      <Input {...field} type="email" placeholder="Usuario cliente" />
+                    </FormControl>
+                    <FormMessage />
+                  </div>
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={control}
+              name="client.pais"
+              render={({ field }) => (
+                <FormItem className="grid grid-cols-4 items-center gap-4">
+                  <FormLabel className="text-right">País</FormLabel>
+                  <div className="col-span-3">
+                    <FormControl>
+                      <Input {...field} type="text" placeholder="Pais de nacimiento" />
+                    </FormControl>
+                    <FormMessage />
+                  </div>
+                </FormItem>
+              )}
+            />
+            <DialogFooter>
+              <Button type="submit">
+                {!isSubmitting ? "Agregar cliente" : "Enviando..."}
               </Button>
-              <Button disabled={false} handleClick={postDataClient}>
-                Guardar
-              </Button>
-            </div>
+            </DialogFooter>
           </form>
-        </div>
-      </div>
-    </div>
+        </Form>
+      </DialogContent>
+    </Dialog>
+
   );
 };
 

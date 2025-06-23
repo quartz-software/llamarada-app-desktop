@@ -139,17 +139,10 @@ const BookingForm = () => {
                   ))
                 }
               </select>
-              <Button
-                disabled={false}
-                handleClick={() => {
-                  setIsModalOpen(true);
-                }}
-              >
-                +
-              </Button>
+              <ModalClientForm reloadClients={() => { getClients() }} />
               {isModalOpen && (
                 <ModalClientForm
-                  onClose={() => {
+                  reloadClients={() => {
                     setIsModalOpen(false);
                   }}
                 />

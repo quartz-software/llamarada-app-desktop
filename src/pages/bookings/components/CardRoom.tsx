@@ -2,32 +2,24 @@ import { FC } from "react";
 import Button from "../../../shared/components/Button";
 import "./CardRoom.css";
 import { useNavigate } from "react-router-dom";
+import { Habitacion } from "@/shared/types/db/habitacion";
 
 type Props = {
-  room: Room;
+  room: Habitacion;
 };
 
 const CardRoom: FC<Props> = ({ room }) => {
-  const estadoClase = `room--card ${room.status}`;
+  const estadoClase = `room--card ${room.estado?.nombre}`;
   const nav = useNavigate();
-  const roomStatus = {
-    unavailable: "No Disponible",
-    available: "Disponible",
-    occupied: "Ocupado",
-    maintenance: "En mantenimiento",
-    cleaning: "Limpieza",
-  };
-
-  let cTag = roomStatus[room.status];
-
+  let cTag = room.estado?.nombre;
   return (
     <div className={estadoClase}>
       <div>
         <div className="room--info">
           <span className="tag">{cTag}</span>
-          <h1>{room.roomNumber}</h1>
-          <h3>{room.type}</h3>
-          <div>{room.capacity} personas</div>
+          <h1>{room.numeroHabitacion}</h1>
+          <h3>{room.tipo?.nombre}</h3>
+          <div>{room.capacidad} personas</div>
         </div>
         <img src="./room1.jpg" alt="" />
       </div>

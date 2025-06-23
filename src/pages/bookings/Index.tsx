@@ -5,9 +5,10 @@ import { useEffect, useState } from "react";
 
 import "./Index.css";
 import FormField from "../../shared/components/FormField";
+import { Habitacion } from "@/shared/types/db/habitacion";
 
 const Habitaciones = () => {
-  const [roomsData, setRoomsData] = useState<Room[]>([]);
+  const [roomsData, setRoomsData] = useState<Habitacion[]>([]);
   const [search, setSearch] = useState({
     text: "",
     dateIn: "",
@@ -32,19 +33,17 @@ const Habitaciones = () => {
       console.error(error);
     }
   }
-  function changeStatus(room: Room) {
-    room.status = "available";
+  function changeStatus(room: Habitacion) {
+    room.estado!.nombre = "disponible";
     return room;
   }
 
-  function fileterRooms(arr: Room[]) {
-    console.log(arr);
+  function fileterRooms(arr: Habitacion[]) {
     if (search.dateIn == "" || search.dateOut == "") return arr;
     const checkInDate = new Date(search.dateIn);
     const checkOutDate = new Date(search.dateOut);
-    console.log({ checkInDate, checkOutDate });
     const considences = arr.filter((room) => {
-      return room.reservas.every((booking) => {
+      return Array.isArray(room.reservas) && room.reservas.every((booking) => {
         const bookingCheckIn = new Date(booking.checkIn);
         const bookingCheckOut = new Date(booking.checkOut);
 
@@ -70,9 +69,7 @@ const Habitaciones = () => {
             type="text"
             resetMessage={() => { }}
             value={search.text}
-            handleInput={(value: string) => {
-              console.log(value);
-            }}
+            handleInput={(value: string) => { }}
           />
         </FormField>
         <FormField label="CheckIn" errorMessage="">

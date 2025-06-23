@@ -6,103 +6,74 @@ import Input from "../../shared/components/Input";
 import "./BookingForm.css";
 import { useEffect, useState } from "react";
 import ModalClientForm from "./components/ModalClientForm";
-
-type Room = {
-  id: string;
-  roomNumber: string;
-  type: string;
-  status: string;
-  capacity: number;
-  pricePerNight: string;
-  description: string;
-};
+import { Habitacion } from "@/shared/types/db/habitacion";
+import { Cliente } from "@/shared/types/db/cliente";
+import { Reserva } from "@/shared/types/db/reserva";
 
 const BookingForm = () => {
   const nav = useNavigate();
   const location = useLocation();
-  const room = location.state?.room as Room;
+  const room = location.state?.room as Habitacion;
 
-  const [clientsData, setClientsData] = useState<Client[]>([]);
+  const [clientsData, setClientsData] = useState<Cliente[]>([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [bookingData, setBookingData] = useState({
-    nAdults: 0,
-    nChild: 0,
-    bookingDate: Date.now(),
-    checkIn: new Date().toISOString().split("T")[0],
-    checkOut: new Date().toISOString().split("T")[0],
-    status: "pending",
-    totalPrice: 0.0,
-    bookingOrigin: "",
-    employeeId: 1,
-    clientId: "1",
+  const [bookingData, setBookingData] = useState<Reserva>({
+    id: -1,
+    numAdultos: 0,
+    numNinos: 0,
+    checkIn: new Date(),
+    checkOut: new Date(),
+    idEstado: 2,
+    origenReserva: "system",
+    idCliente: 0,
+    createdAt: new Date(),
   });
 
-  function calcularDiasEntreFechas() {
-    const inicio = bookingData.checkIn;
-    const fin = bookingData.checkOut;
+  async function postData() {
+    try {
 
-    const diferenciaEnMilisegundos =
-      new Date(fin).getTime() - new Date(inicio).getTime();
-
-    const diferenciaEnDias = diferenciaEnMilisegundos / (1000 * 60 * 60 * 24);
-
-    return Math.round(diferenciaEnDias);
+      let url = "/api/bookings";
+      let cont = {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          idCliente: bookingData.idCliente,
+          numAdultos: bookingData.numAdultos,
+          numNinos: bookingData.numNinos,
+          checkIn: bookingData.checkIn,
+          checkOut: bookingData.checkOut,
+          precioTotal: bookingData.precioTotal,
+          origenReserva: "system",
+          rooms: [room.id],
+        }),
+      };
+      const res = await fetch(url, cont)
+      if (res.status == 200) {
+        nav("/bookings");
+      }
+    } catch (error) {
+      console.error(error);
+    }
   }
 
-  function postData() {
-    let url = "/api/bookings";
-    let cont = {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        nAdults: parseInt(bookingData.nAdults),
-        nChild: parseInt(bookingData.nChild),
-        bookingDate: bookingData.bookingDate,
-        checkIn: bookingData.checkIn,
-        checkOut: bookingData.checkOut,
-        status: bookingData.status,
-        totalPrice: bookingData.totalPrice,
-        bookingOrigin: "system",
-        employeeId: bookingData.employeeId,
-        clientId: bookingData.clientId,
-        rooms: [parseInt(room.id)],
-      }),
-    };
+  async function getClients() {
+    try {
+      let url = "/api/clients";
+      let cont = {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      };
+      const res = await fetch(url, cont)
+      const data = await res.json()
+      setClientsData(data);
 
-    fetch(url, cont)
-      .then((res) => {
-        if (res.status == 200) {
-          nav("/bookings");
-        }
-      })
-      .catch((error) => {
-        console.error(error);
-      });
-  }
-
-  function getClients() {
-    let url = "/api/clients";
-    let cont = {
-      method: "GET",
-      headers: {
-        "Content-Type": "application/json",
-      },
-    };
-    fetch(url, cont)
-      .then((res) => {
-        if (res.status == 200) {
-          return res.json();
-        }
-      })
-      .then((data) => {
-        console.log(data);
-        setClientsData(data);
-      })
-      .catch((error) => {
-        console.error(error.toString());
-      });
+    } catch (error) {
+      console.error(error);
+    }
   }
 
   useEffect(() => {
@@ -116,26 +87,26 @@ const BookingForm = () => {
         <div className="info--row">
           <div>
             <h4>N HABITACIÓN:</h4>
-            <span>{room.roomNumber}</span>
+            <span>{room.numeroHabitacion}</span>
           </div>
           <div>
             <h4>TIPO:</h4>
-            <span>{room.type}</span>
+            <span>{room.tipo?.nombre}</span>
           </div>
           <div>
             <h4>ESTADO:</h4>
-            <span>{room.status}</span>
+            <span>{room.estado?.nombre}</span>
           </div>
         </div>
         <div className="info--row">
           <div>
             <h4>DESCIPCIÓN:</h4>
-            <span>{room.description}</span>
+            <span>{room.descripcion}</span>
           </div>
           <div></div>
           <div>
             <h4>PRECIO:</h4>
-            <span>{room.pricePerNight}</span>
+            <span>{room.tarifas?.[0]?.precio ?? "N/A"}</span>
           </div>
         </div>
       </div>
@@ -155,18 +126,18 @@ const BookingForm = () => {
                 onChange={(e) => {
                   setBookingData({
                     ...bookingData,
-                    clientId: e.target.value,
+                    idCliente: Number(e.target.value),
                   });
-                  console.log(e.target.value);
                 }}
               >
-                {clientsData.map((client, index) => (
-                  <option key={index} value={client.id}>
-                    {`${client.user?.dni}   |   ${client.user?.firstname} ${
-                      client.user?.lastname1
-                    } ${client.user?.lastname2 ?? ""}`}
-                  </option>
-                ))}
+                <option>--- Seleccione un cliente ---</option>
+                {
+                  clientsData.map((client, index) => (
+                    <option key={index} value={client.id}>
+                      {`${client.dni}\t|\t${client.nombre1} ${client.nombre2} ${client.apellido1} ${client.apellido2}`}
+                    </option>
+                  ))
+                }
               </select>
               <Button
                 disabled={false}
@@ -189,20 +160,20 @@ const BookingForm = () => {
             <Input
               type="number"
               handleInput={(value: number) => {
-                setBookingData({ ...bookingData, nAdults: value });
+                setBookingData({ ...bookingData, numAdultos: value });
               }}
-              value={bookingData.nAdults}
-              resetMessage={() => {}}
+              value={bookingData.numAdultos}
+              resetMessage={() => { }}
             />
           </FormField>
           <FormField label="NUMERO DE NIÑOS:" errorMessage=" ">
             <Input
               type="number"
               handleInput={(value: number) => {
-                setBookingData({ ...bookingData, nChild: value });
+                setBookingData({ ...bookingData, numNinos: value });
               }}
-              value={bookingData.nChild}
-              resetMessage={() => {}}
+              value={bookingData.numNinos}
+              resetMessage={() => { }}
             />
           </FormField>
         </div>
@@ -212,28 +183,21 @@ const BookingForm = () => {
               type="date"
               handleInput={(value: string) => {
                 setBookingData({
-                  ...bookingData,
-                  checkIn: value,
+                  ...bookingData, checkIn: new Date(value),
                 });
-                console.log(value);
               }}
-              resetMessage={() => {}}
-              value={bookingData.checkIn}
+              resetMessage={() => { }}
+              value={new Date(bookingData.checkIn).toISOString().split("T")[0]}
             />
           </FormField>
           <FormField label="FECHA DE SALIDA:" errorMessage=" ">
             <Input
               type="date"
               handleInput={(value: string) => {
-                setBookingData({
-                  ...bookingData,
-                  checkOut: value,
-                });
+                setBookingData({ ...bookingData, checkOut: new Date(value) });
               }}
-              resetMessage={() => {
-                console.log("no reset");
-              }}
-              value={bookingData.checkOut}
+              resetMessage={() => { }}
+              value={new Date(bookingData.checkOut).toISOString().split("T")[0]}
             />
           </FormField>
         </div>
@@ -242,20 +206,10 @@ const BookingForm = () => {
             <Input
               type="number"
               handleInput={(value: number) => {
-                setBookingData({ ...bookingData, totalPrice: value });
+                setBookingData({ ...bookingData, precioTotal: value });
               }}
-              resetMessage={() => {}}
-              value={bookingData.totalPrice}
-            />
-          </FormField>
-          <FormField label="DESCUENTO:" errorMessage=" ">
-            <Input
-              type="number"
-              handleInput={(value: number) => {
-                console.log(value);
-              }}
-              value={0}
-              resetMessage={() => {}}
+              resetMessage={() => { }}
+              value={bookingData.precioTotal ?? 0}
             />
           </FormField>
         </div>

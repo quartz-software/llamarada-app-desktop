@@ -94,7 +94,7 @@ const Cliente_Formulario_Modal: FC<ModalClienteProps> = ({ reloadClients }) => {
           <form onSubmit={handleSubmit(onCreateClient)} className="space-y-4">
             <FormField
               control={control}
-              name="client.dni"
+              name="cliente.dni"
               render={({ field }) => (
                 <FormItem className="grid grid-cols-4 items-center gap-4">
                   <FormLabel className="text-right">CI</FormLabel>
@@ -109,7 +109,7 @@ const Cliente_Formulario_Modal: FC<ModalClienteProps> = ({ reloadClients }) => {
             />
             <FormField
               control={control}
-              name="client.nombre1"
+              name="cliente.nombre1"
               render={({ field }) => (
                 <FormItem className="grid grid-cols-4 items-center gap-4">
                   <FormLabel className="text-right">Nombre</FormLabel>
@@ -128,7 +128,7 @@ const Cliente_Formulario_Modal: FC<ModalClienteProps> = ({ reloadClients }) => {
             />
             <FormField
               control={control}
-              name="client.apellido1"
+              name="cliente.apellido1"
               render={({ field }) => (
                 <FormItem className="grid grid-cols-4 items-center gap-4">
                   <FormLabel className="text-right">Apellido</FormLabel>
@@ -147,7 +147,7 @@ const Cliente_Formulario_Modal: FC<ModalClienteProps> = ({ reloadClients }) => {
             />
             <FormField
               control={control}
-              name="client.telefono"
+              name="cliente.telefono"
               render={({ field }) => (
                 <FormItem className="grid grid-cols-4 items-center gap-4">
                   <FormLabel className="text-right">Telefono</FormLabel>
@@ -166,7 +166,7 @@ const Cliente_Formulario_Modal: FC<ModalClienteProps> = ({ reloadClients }) => {
             />
             <FormField
               control={control}
-              name="user.correo"
+              name="usuario.correo"
               render={({ field }) => (
                 <FormItem className="grid grid-cols-4 items-center gap-4">
                   <FormLabel className="text-right">Correo</FormLabel>
@@ -181,7 +181,7 @@ const Cliente_Formulario_Modal: FC<ModalClienteProps> = ({ reloadClients }) => {
             />
             <FormField
               control={control}
-              name="client.pais"
+              name="cliente.pais"
               render={({ field }) => (
                 <FormItem className="grid grid-cols-4 items-center gap-4">
                   <FormLabel className="text-right">País</FormLabel>

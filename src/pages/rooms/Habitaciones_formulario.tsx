@@ -1,52 +1,74 @@
 import { useEffect, useState } from "react";
-import Button from "../../shared/components/Button";
-import FormField from "../../shared/components/FormField";
-import Input from "../../shared/components/Input";
-import "./Habitaciones_formulario.css";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import RoomImage from "./components/RoomImage";
 import { Habitacion } from "@/shared/types/db/habitacion";
+import { z } from "zod";
+import { HabitacionCreateSchema } from "@/shared/schemas/models/habitacion";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/shared/components/ui/form";
+import { Input } from "@/shared/components/ui/input";
+import { Button } from "@/shared/components/ui/button";
+import { Textarea } from "@/shared/components/ui/textarea";
+import { ImagenHabitacion } from "@/shared/types/db/imagen-habitacion";
+import { toast } from "sonner";
 
 
 const Habitaciones_formulario = () => {
   const navigate = useNavigate();
   const [params] = useSearchParams();
-  const id = params.get("id");
+  const idHabitacion = params.get("id");
+  const [isEditing, setIsEditing] = useState(idHabitacion == null ? false : true)
 
-  const [roomData, setRoomData] = useState<Habitacion>({
-    id: -1,
-    numeroHabitacion: "",
-    capacidad: 0,
-    descripcion: "",
-    idTipoHabitacion: 1,
-    idEstadoHabitacion: 1,
-    imagenes: [],
-  });
+  type HabitacionType = z.infer<typeof HabitacionCreateSchema>
+  const form = useForm<HabitacionType>({
+    resolver: zodResolver(HabitacionCreateSchema),
+    defaultValues: {
+      numeroHabitacion: "",
+      capacidad: 0,
+      descripcion: "",
+      idTipoHabitacion: 1,
+      idEstadoHabitacion: 1,
+    }
+  })
+  const {
+    handleSubmit,
+    control,
+    reset,
+    formState: { isSubmitting }
+  } = form
+
+  const [roomData, setRoomData] = useState<ImagenHabitacion[]>([]);
 
   //const [RoomImages, setRoomImages] = useState<RoomImage[]>([])
 
   async function getData() {
     try {
-      let url = `/api/rooms/${id}`;
+      let url = `/api/rooms/${idHabitacion}`;
       const res = await fetch(url)
       const data = await res.json()
-      console.log(data);
-      setRoomData(data);
+      reset({
+        numeroHabitacion: data.numeroHabitacion,
+        capacidad: data.capacidad,
+        descripcion: data.descripcion,
+        idEstadoHabitacion: data.idEstadoHabitacion,
+        idTipoHabitacion: data.idTipoHabitacion,
+      });
     } catch (error) {
       navigate("/rooms")
       console.error(error)
     }
   }
 
-  async function postData() {
+  const postData = async (data: HabitacionType) => {
     try {
       const formData = new FormData();
-      formData.append("numeroHabitacion", roomData.numeroHabitacion);
-      formData.append("capacidad", roomData.capacidad.toString());
-      formData.append("idEstadoHabitacion", roomData.idEstadoHabitacion.toString());
-      formData.append("idTipoHabitacion", roomData.idTipoHabitacion.toString());
-      // formData.append("pricePerNight", roomData.pricePerNight);
-      formData.append("descripcion", roomData.descripcion ?? "");
+      formData.append("numeroHabitacion", data.numeroHabitacion);
+      formData.append("capacidad", data.capacidad.toString());
+      formData.append("idEstadoHabitacion", data.idEstadoHabitacion.toString());
+      formData.append("idTipoHabitacion", data.idTipoHabitacion.toString());
+      // formData.append("pricePerNight", data.pricePerNight);
+      formData.append("descripcion", data.descripcion ?? "");
 
       const imageMetaData: {
         id: number | null;
@@ -55,7 +77,7 @@ const Habitaciones_formulario = () => {
         type: string;
         url?: string;
       }[] = [];
-      roomData.imagenes!.forEach((image, index) => {
+      roomData.forEach((image, index) => {
         if (image.url) {
           formData.append("imagenes", image.url);
         }
@@ -70,12 +92,8 @@ const Habitaciones_formulario = () => {
       });
 
       formData.append("images", JSON.stringify(imageMetaData));
-      for (let pair of formData.entries()) {
-        console.log(pair[0] + ": ", pair[1]);
-      }
 
-
-      const id = roomData.id != -1 ? roomData.id : null;
+      const id = isEditing ? idHabitacion : null;
       let url = `/api/rooms/${id ? id : ""}`;
 
       let cont = {
@@ -85,80 +103,113 @@ const Habitaciones_formulario = () => {
 
       const res = await fetch(url, cont)
       const status = res.status
-      console.log(status);
 
-      if (status === 201 || status === 204) {
+      if (status === 201) {
+        toast.success("Habitacion agregada correctamente")
         navigate("/rooms");
+      }
+      else if (status === 204) {
+        toast.success("Habitacion actualizada correctamente")
+        navigate("/rooms");
+      }
+      else {
+        toast.error("Hubo un problema")
       }
     } catch (error) {
       console.log(error);
     }
   }
   useEffect(() => {
-    if (id != null) {
+    if (idHabitacion != null) {
       getData();
     }
   }, []);
   return (
-    <div>
-      <h1>Habitación</h1>
-      <form
-        className="form--room"
-        onSubmit={(e) => {
-          e.preventDefault();
-        }}
-      >
-        <FormField label="Numero Habitacion" errorMessage=" ">
-          <Input
-            placeholder="Numero Habitacion"
-            type="text"
-            handleInput={(value: string) => {
-              setRoomData({ ...roomData, numeroHabitacion: value });
-            }}
-            value={roomData.numeroHabitacion}
-            resetMessage={() => { }}
+    <div className="flex items-center flex-col">
+      <h1 className="font-bold text-2xl mt-8">Habitación</h1>
+      <Form {...form}>
+        <form
+          className="space-y-6 min-w-96 mt-6"
+          onSubmit={handleSubmit(postData)}
+        >
+          <FormField
+            control={control}
+            name="numeroHabitacion"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Numero de Habiacion:</FormLabel>
+                <FormControl>
+                  <Input
+                    {...field}
+                    type="text"
+                    placeholder="Habitacion"
+                  />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
           />
-        </FormField>
-
-        <FormField label="Capacidad" errorMessage=" ">
-          <Input
-            type="number"
-            placeholder="Capacidad"
-            handleInput={(value: string) => {
-              setRoomData({ ...roomData, capacidad: parseInt(value) });
-            }}
-            value={roomData.capacidad.toString()}
-            resetMessage={() => { }}
+          <FormField
+            control={control}
+            name="capacidad"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Capacidad:</FormLabel>
+                <FormControl>
+                  <Input
+                    {...field}
+                    type="number"
+                    placeholder="Cantidad de personas"
+                  />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
           />
-        </FormField>
-        <FormField label="Estado" errorMessage="">
-          <select
-            value={roomData.idEstadoHabitacion}
-            onChange={(e) => {
-              setRoomData({ ...roomData, idEstadoHabitacion: Number(e.target.value) });
-            }}
-          >
-            <option value="7">No disponible</option>
-            <option value="1">Disponible</option>
-            <option value="2">Ocupado</option>
-            <option value="6">Mantemiento</option>
-            <option value="5">Limpieza</option>
-          </select>
-        </FormField>
+          <FormField
+            control={control}
+            name="idEstadoHabitacion"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Estado de la habitacion:</FormLabel>
+                <FormControl>
+                  <select
+                    value={field.value}
+                    onChange={field.onChange}
+                  >
+                    <option value="7">No disponible</option>
+                    <option value="1">Disponible</option>
+                    <option value="2">Ocupado</option>
+                    <option value="6">Mantemiento</option>
+                    <option value="5">Limpieza</option>
+                  </select>
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={control}
+            name="idTipoHabitacion"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Tipo de la habitacion:</FormLabel>
+                <FormControl>
+                  <select
+                    value={field.value}
+                    onChange={field.onChange}
+                  >
+                    <option value="1">Normal</option>
+                    <option value="2">Suite</option>
+                    <option value="3">Premium</option>
+                  </select>
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
 
-        <FormField label="Tipo" errorMessage=" ">
-          <select
-            value={roomData.idTipoHabitacion}
-            onChange={(e) => {
-              setRoomData({ ...roomData, idTipoHabitacion: Number(e.target.value) });
-            }}
-          >
-            <option value="1">Normal</option>
-            <option value="2">Suite</option>
-            <option value="3">Premium</option>
-          </select>
-        </FormField>
-        {/* <FormField label="Precio" errorMessage="">
+          {/* <FormField label="Precio" errorMessage="">
           <Input
             type="number"
             placeholder="Precio"
@@ -169,16 +220,23 @@ const Habitaciones_formulario = () => {
             resetMessage={() => { }}
           />
         </FormField> */}
-        <FormField label="Descripcion" errorMessage=" " modifier="description">
-          <textarea
-            placeholder="Descripcion"
-            onChange={(e) => {
-              setRoomData({ ...roomData, descripcion: e.target.value });
-            }}
-            value={roomData.descripcion}
-          ></textarea>
-        </FormField>
-        <div>
+          <FormField
+            control={control}
+            name="descripcion"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Descripcion (opcional):</FormLabel>
+                <FormControl>
+                  <Textarea
+                    {...field}
+                    placeholder="Descripcion de la habitacion"
+                  />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          {/* <div>
           <h2>Promociones</h2>
           <div className="promotion__select">
             <select
@@ -243,20 +301,20 @@ const Habitaciones_formulario = () => {
               })}
             </div>
           )}
-        </div>
-
-        <Button disabled={false} handleClick={postData}>
-          Guardar
-        </Button>
-        <Button
-          disabled={false}
-          handleClick={() => {
-            navigate("/rooms");
-          }}
-        >
-          Cancelar
-        </Button>
-      </form>
+        </div> */}
+          <div className="flex justify-end gap-6">
+            <Button type="submit">
+              Guardar
+            </Button>
+            <Button
+              type="button"
+              onClick={() => navigate("/rooms")}
+            >
+              Cancelar
+            </Button>
+          </div>
+        </form>
+      </Form>
     </div>
   );
 };

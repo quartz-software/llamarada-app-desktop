@@ -19,6 +19,7 @@ import Rooms from "./pages/rooms/Index";
 import RoomRatesForm from "./pages/RoomRate/RoomRatesForm";
 import PromotionsForm from "./pages/promotions/PromotionsForm";
 import Habitaciones_formulario from "./pages/rooms/Habitaciones_formulario";
+import { Toaster } from "./shared/components/ui/sonner";
 // import { useEffect, useState } from "react";
 // import useUserRole from "./shared/hooks/useUserRole";
 // import { UserRole } from "./shared/types/UserRole";
@@ -48,46 +49,49 @@ function App() {
   // return <div>Loading...</div>;
   // }
   return (
-    <BrowserRouter>
-      <Routes>
-        <Route path="/login" element={<Login />} />
-        <Route path="/" element={<Layout />}>
-          <Route
-            index
-            element={
-              // isAuth &&
-              // (role === "administrador" || role === "recepcionista") ? (
-              // <Navigate to="/home" />
-              // ) : (
-              <Navigate to="/login" />
-              // )
-            }
-          />
+    <>
+      <BrowserRouter>
+        <Routes>
+          <Route path="/login" element={<Login />} />
+          <Route path="/" element={<Layout />}>
+            <Route
+              index
+              element={
+                // isAuth &&
+                // (role === "administrador" || role === "recepcionista") ? (
+                // <Navigate to="/home" />
+                // ) : (
+                <Navigate to="/login" />
+                // )
+              }
+            />
 
-          <Route path="home" element={<Home />} />
-          <Route path="addservices" element={<AddServices />} />
-          <Route path="bookings">
-            <Route index element={<Bookings />} />
-            <Route path="create" element={<BookingForm />} />
+            <Route path="home" element={<Home />} />
+            <Route path="addservices" element={<AddServices />} />
+            <Route path="bookings">
+              <Route index element={<Bookings />} />
+              <Route path="create" element={<BookingForm />} />
+            </Route>
+            <Route path="promotions">
+              <Route index element={<Promotions />} />
+              <Route path="edit" element={<PromotionsForm />} />
+            </Route>
+            <Route path="rates">
+              <Route index element={<RoomRates />} />
+              <Route path="edit" element={<RoomRatesForm />} />
+            </Route>
+            <Route path="rooms">
+              <Route index element={<Rooms />} />
+              <Route path="form" element={<Habitaciones_formulario />} />
+            </Route>
+            <Route path="services" element={<Services />} />
+            <Route path="stock" element={<Stock />} />
+            <Route path="tasks" element={<Tasks />} />
           </Route>
-          <Route path="promotions">
-            <Route index element={<Promotions />} />
-            <Route path="edit" element={<PromotionsForm />} />
-          </Route>
-          <Route path="rates">
-            <Route index element={<RoomRates />} />
-            <Route path="edit" element={<RoomRatesForm />} />
-          </Route>
-          <Route path="rooms">
-            <Route index element={<Rooms />} />
-            <Route path="form" element={<Habitaciones_formulario />} />
-          </Route>
-          <Route path="services" element={<Services />} />
-          <Route path="stock" element={<Stock />} />
-          <Route path="tasks" element={<Tasks />} />
-        </Route>
-      </Routes>
-    </BrowserRouter>
+        </Routes>
+      </BrowserRouter>
+      <Toaster />
+    </>
   );
 }
 

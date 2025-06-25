@@ -7,6 +7,7 @@ import {
   // faPlusCircle,
   faSignOut,
   faTags,
+  faTasks,
   // faTasks,
   faTools,
 } from "@fortawesome/free-solid-svg-icons";
@@ -46,12 +47,12 @@ const Layout = () => {
       label: "Habitaciones",
       show: isAdmin,
     },
-    {
+    /* {
       icon: faTags,
       path: "/promotions",
       label: "Promociones",
       show: isAdmin,
-    },
+    }, */
     {
       icon: faDollarSign,
       path: "/rates",
@@ -92,9 +93,8 @@ const Layout = () => {
               item.show && (
                 <li
                   key={index}
-                  className={`navbar__item ${
-                    isActiveLink(item.path) ? "active" : ""
-                  }`}
+                  className={`navbar__item ${isActiveLink(item.path) ? "active" : ""
+                    }`}
                 >
                   <Link className="navbar__link" to={item.path}>
                     <i>

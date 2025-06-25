@@ -7,7 +7,6 @@ import { Servicio } from "@/shared/types/db/servicio";
 
 const Services: React.FC = () => {
   const [services, setServices] = useState<Servicio[]>([]);
-  const [isModalOpen, setIsModalOpen] = useState(false);
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const [serviceToEdit, setServiceToEdit] = useState<Servicio | null>(null);
 
@@ -22,8 +21,6 @@ const Services: React.FC = () => {
         body: JSON.stringify(newService),
       })
       getList()
-      // setServices([...services, newService]);
-      setIsModalOpen(false);
     } catch (error) {
       console.error(error)
     }
@@ -89,27 +86,19 @@ const Services: React.FC = () => {
   return (
     <div className="services-container">
       <h1>Gestión de Servicios</h1>
-      <button
-        className="add-service-button"
-        onClick={() => setIsModalOpen(true)}
-      >
-        Agregar Servicio
-      </button>
+      <ServiceModal
+        onSave={handleAddService}
+      />
       <ServiceList
         services={services}
         onDelete={handleDeleteService}
         onEdit={handleOpenEditModal}
       />
-      {isModalOpen && (
-        <ServiceModal
-          onClose={() => setIsModalOpen(false)}
-          onSave={handleAddService}
-        />
-      )}
       {isEditModalOpen && serviceToEdit && (
         <ServiceModalEdit
           service={serviceToEdit}
-          onClose={() => setIsEditModalOpen(false)}
+          open={isEditModalOpen}
+          setOpen={setIsEditModalOpen}
           onSave={handleEditService}
         />
       )}

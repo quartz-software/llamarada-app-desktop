@@ -14,7 +14,7 @@ import { Popover, PopoverContent, PopoverTrigger } from "@/shared/components/ui/
 import { cn } from "@/shared/lib/utils";
 import { Button } from "@/shared/components/ui/button";
 import { format } from "date-fns";
-import { CalendarIcon } from "lucide-react";
+import { CalendarIcon, UserPlus } from "lucide-react";
 import { Calendar } from "@/shared/components/ui/calendar";
 import { toast } from "sonner";
 
@@ -23,7 +23,7 @@ const BookingForm = () => {
   const location = useLocation();
   const room = location.state?.room as Habitacion;
   const [clientsData, setClientsData] = useState<Cliente[]>([]);
-  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isModalClientsOpen, setIsModalClientsOpen] = useState(false);
 
   type ReservaType = z.infer<typeof ReservaCreateSchema>
 
@@ -121,7 +121,13 @@ const BookingForm = () => {
           </div>
         </div>
       </div>
-
+      <ModalClientForm
+        open={isModalClientsOpen}
+        setOpen={setIsModalClientsOpen}
+        reloadClients={() => {
+          getClients();
+        }}
+      />
       <Form {...form}>
         <form
           className="space-y-6"
@@ -151,14 +157,11 @@ const BookingForm = () => {
                           ))
                         }
                       </select>
-                      <ModalClientForm reloadClients={() => { getClients() }} />
-                      {isModalOpen && (
-                        <ModalClientForm
-                          reloadClients={() => {
-                            setIsModalOpen(false);
-                          }}
-                        />
-                      )}
+                      {/* Boton para abrir modaa */}
+                      <Button type="button" variant="default" size="icon"
+                        onClick={() => setIsModalClientsOpen(true)}>
+                        <UserPlus />
+                      </Button>
                     </div>
                   </FormControl>
                   <FormMessage />

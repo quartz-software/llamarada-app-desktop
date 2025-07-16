@@ -1,23 +1,21 @@
-import { FC, useState } from "react";
+import { FC } from "react";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { ClienteCreateSchema } from "@/shared/schemas/models/cliente";
 import { UsuarioCreateSchema } from "@/shared/schemas/models/usuario";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
-import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from "@/shared/components/ui/dialog";
+import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "@/shared/components/ui/dialog";
 import { Button } from "@/shared/components/ui/button";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/shared/components/ui/form";
 import { Input } from "@/shared/components/ui/input";
-import { UserPlus } from "lucide-react";
-
 type ModalClienteProps = {
   reloadClients: () => void;
+  open: boolean;
+  setOpen: (open: boolean) => void;
 };
 
-const Cliente_Formulario_Modal: FC<ModalClienteProps> = ({ reloadClients }) => {
-  const [open, setOpen] = useState(false)
-
+const Cliente_Formulario_Modal: FC<ModalClienteProps> = ({ open, setOpen, reloadClients }) => {
   const ClienteUsuarioCreateSchema = z.object({
     cliente: ClienteCreateSchema,
     usuario: UsuarioCreateSchema,
@@ -78,11 +76,6 @@ const Cliente_Formulario_Modal: FC<ModalClienteProps> = ({ reloadClients }) => {
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>
-      <DialogTrigger asChild>
-        <Button variant="default" size="icon">
-          <UserPlus />
-        </Button>
-      </DialogTrigger>
       <DialogContent className="sm:max-w-[425px]">
         <DialogHeader>
           <DialogTitle>Añade un nuevo cliente</DialogTitle>

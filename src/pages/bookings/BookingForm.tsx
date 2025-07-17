@@ -14,9 +14,10 @@ import { Popover, PopoverContent, PopoverTrigger } from "@/shared/components/ui/
 import { cn } from "@/shared/lib/utils";
 import { Button } from "@/shared/components/ui/button";
 import { format } from "date-fns";
-import { CalendarIcon, UserPlus } from "lucide-react";
+import { CalendarIcon, Check, ChevronsUpDown, UserPlus } from "lucide-react";
 import { Calendar } from "@/shared/components/ui/calendar";
 import { toast } from "sonner";
+import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList } from "@/shared/components/ui/command";
 
 const BookingForm = () => {
   const nav = useNavigate();
@@ -40,7 +41,6 @@ const BookingForm = () => {
 
   const postData = async (data: ReservaType) => {
     try {
-
       let url = "/api/bookings";
       let cont = {
         method: "POST",
@@ -57,14 +57,16 @@ const BookingForm = () => {
           rooms: [room.id],
         }),
       };
-
       const res = await fetch(url, cont)
       if (res.status == 200) {
         toast.success("Reseva creada")
         nav("/bookings");
       }
+      else {
+        console.log(res);
+        toast.error("Hubo un error al crear la reseva")
+      }
     } catch (error) {
-      toast.success("Hubo un error al crear la reseva")
       console.error(error);
     }
   }
@@ -140,31 +142,71 @@ const BookingForm = () => {
               render={({ field }) => (
                 <FormItem className="col-span-2">
                   <FormLabel>CLIENTE:</FormLabel>
-                  <FormControl>
-                    <div className="flex gap-4">
-                      <select
-                        name=""
-                        id=""
-                        value={field.value}
-                        onChange={field.onChange}
-                      >
-                        <option>--- Seleccione un cliente ---</option>
-                        {
-                          clientsData.map((client, index) => (
-                            <option key={index} value={client.id}>
-                              {`${client.dni}\t|\t${client.nombre1} ${client.nombre2} ${client.apellido1} ${client.apellido2}`}
-                            </option>
-                          ))
-                        }
-                      </select>
-                      {/* Boton para abrir modaa */}
-                      <Button type="button" variant="default" size="icon"
-                        onClick={() => setIsModalClientsOpen(true)}>
-                        <UserPlus />
-                      </Button>
+                  <div className="flex gap-4 items-start">
+                    <div className="w-full">
+                      <FormControl>
+                        <Popover>
+                          <PopoverTrigger asChild>
+                            <Button
+                              variant="outline"
+                              role="combobox"
+                              className={cn(
+                                "w-full justify-between",
+                                !field.value && "text-muted-foreground"
+                              )}
+                            >
+                              {field.value
+                                ? (() => {
+                                  const cliente = clientsData.find((cliente) => cliente.id === field.value);
+                                  return cliente
+                                    ? `${cliente.nombre1} ${cliente.nombre2} ${cliente.apellido1} ${cliente.apellido2}`
+                                    : "Seleccione un cliente";
+                                })()
+                                : "Seleccione un cliente"}
+                              <ChevronsUpDown className="opacity-50" />
+                            </Button>
+                          </PopoverTrigger>
+                          <PopoverContent align="start" className="w-[var(--radix-popover-trigger-width)] p-0">
+                            <Command>
+                              <CommandInput
+                                placeholder="Buscar cliente..."
+                                className="h-9"
+                              />
+                              <CommandList>
+                                <CommandEmpty>Cliente no encontrado.</CommandEmpty>
+                                <CommandGroup>
+                                  {clientsData.map((cliente) => (
+                                    <CommandItem
+                                      value={`${cliente.nombre1} ${cliente.nombre2} ${cliente.apellido1} ${cliente.apellido2} `}
+                                      key={cliente.id}
+                                      onSelect={() => {
+                                        form.setValue("idCliente", cliente.id)
+                                      }}
+                                    >
+                                      {`${cliente.nombre1} ${cliente.nombre2} ${cliente.apellido1} ${cliente.apellido2} `}
+                                      <Check
+                                        className={cn(
+                                          "ml-auto",
+                                          cliente.id === field.value
+                                            ? "opacity-100"
+                                            : "opacity-0"
+                                        )}
+                                      />
+                                    </CommandItem>
+                                  ))}
+                                </CommandGroup>
+                              </CommandList>
+                            </Command>
+                          </PopoverContent>
+                        </Popover>
+                      </FormControl>
+                      <FormMessage />
                     </div>
-                  </FormControl>
-                  <FormMessage />
+                    <Button type="button" variant="default" size="icon"
+                      onClick={() => setIsModalClientsOpen(true)}>
+                      <UserPlus />
+                    </Button>
+                  </div>
                 </FormItem>
               )}
             />
@@ -206,7 +248,7 @@ const BookingForm = () => {
               control={form.control}
               name="checkIn"
               render={({ field }) => (
-                <FormItem className="flex flex-col">
+                <FormItem>
                   <FormLabel>FECHA DE INGRESO:</FormLabel>
                   <FormControl>
                     <Popover>

@@ -152,7 +152,8 @@ const BookingForm = () => {
                               role="combobox"
                               className={cn(
                                 "w-full justify-between",
-                                !field.value && "text-muted-foreground"
+                                !field.value && "text-muted-foreground",
+                                form.formState.errors.idCliente && "border-red-500"
                               )}
                             >
                               {field.value
@@ -180,7 +181,7 @@ const BookingForm = () => {
                                       value={`${cliente.nombre1} ${cliente.nombre2} ${cliente.apellido1} ${cliente.apellido2} `}
                                       key={cliente.id}
                                       onSelect={() => {
-                                        form.setValue("idCliente", cliente.id)
+                                        form.setValue("idCliente", cliente.id, { shouldValidate: true, shouldTouch: true })
                                       }}
                                     >
                                       {`${cliente.nombre1} ${cliente.nombre2} ${cliente.apellido1} ${cliente.apellido2} `}
@@ -257,7 +258,9 @@ const BookingForm = () => {
                           variant={"outline"}
                           className={cn(
                             "w-full pl-3 text-left font-normal",
-                            !field.value && "text-muted-foreground"
+                            !field.value && "text-muted-foreground",
+                            form.formState.errors.checkIn && "border-red-500"
+
                           )}
                         >
                           {field.value ? (
@@ -298,7 +301,9 @@ const BookingForm = () => {
                           variant={"outline"}
                           className={cn(
                             "w-full pl-3 text-left font-normal",
-                            !field.value && "text-muted-foreground"
+                            !field.value && "text-muted-foreground",
+                            form.formState.errors.checkOut && "border-red-500"
+
                           )}
                         >
                           {field.value ? (

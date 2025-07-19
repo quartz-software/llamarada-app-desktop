@@ -37,11 +37,6 @@ const Services: React.FC = () => {
         body: JSON.stringify(updatedService),
       })
       getList()
-      // setServices(
-      //   services.map((service) =>
-      //     service.id === updatedService.id ? updatedService : service
-      //   )
-      // );
       setIsEditModalOpen(false);
     } catch (error) {
       console.error(error)
@@ -84,8 +79,8 @@ const Services: React.FC = () => {
   }, []);
 
   return (
-    <div className="services-container">
-      <h1>Gestión de Servicios</h1>
+    <div className="">
+      <h1 className="mb-5 font-bold text-2xl">Gestión de Servicios</h1>
       <ServiceModal
         onSave={handleAddService}
       />

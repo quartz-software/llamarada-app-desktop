@@ -21,9 +21,9 @@ const ServiceList: React.FC<ServiceListProps> = ({
     "Limpieza"
   ];
   return (
-    <div className="rounded-lg border">
+    <div className="rounded-lg border my-5">
       <Table>
-        <TableHeader>
+        <TableHeader className="sticky top-0 z-10 bg-muted">
           <TableRow>
             <TableHead>Nombre</TableHead>
             <TableHead>Tipo</TableHead>
@@ -46,10 +46,13 @@ const ServiceList: React.FC<ServiceListProps> = ({
                 </Badge>
               </TableCell>
               <TableCell className="flex items-center justify-end gap-2">
-                <Button onClick={() => onEdit(service)}>
+                <Button
+                  variant="default"
+                  onClick={() => onEdit(service)}>
                   <Pen />
                 </Button>
                 <Button
+                  variant="destructive"
                   onClick={() => onDelete(service.id)}
                 >
                   <Trash />

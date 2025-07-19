@@ -1,9 +1,9 @@
 import React from "react";
-import Button from "../../../shared/components/Button";
-import "./ServiceList.css";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faPen, faTrashAlt } from "@fortawesome/free-solid-svg-icons";
 import { Servicio } from "@/shared/types/db/servicio";
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/shared/components/ui/table";
+import { Badge } from "@/shared/components/ui/badge";
+import { Button } from "@/shared/components/ui/button";
+import { Pen, Trash } from "lucide-react";
 
 interface ServiceListProps {
   services: Servicio[];
@@ -21,54 +21,44 @@ const ServiceList: React.FC<ServiceListProps> = ({
     "Limpieza"
   ];
   return (
-    <div className="service-list">
-      <table className="service-table">
-        <thead>
-          <tr>
-            <th>Nombre</th>
-            <th>Tipo</th>
-            <th>Precio</th>
-            <th>Horario</th>
-            <th>Disponibilidad</th>
-            <th>Acciones</th>
-          </tr>
-        </thead>
-        <tbody>
+    <div className="rounded-lg border">
+      <Table>
+        <TableHeader>
+          <TableRow>
+            <TableHead>Nombre</TableHead>
+            <TableHead>Tipo</TableHead>
+            <TableHead>Precio</TableHead>
+            <TableHead>Horario</TableHead>
+            <TableHead>Disponibilidad</TableHead>
+            <TableHead></TableHead>
+          </TableRow>
+        </TableHeader>
+        <TableBody>
           {services.map((service) => (
-            <tr key={service.id}>
-              <td>{service.nombre}</td>
-              <td>{ServiceTypes[service.idTipoServicio - 1]}</td>
-              <td>
-                {service.precio} {service.moneda.toUpperCase()}
-              </td>
-              <td>
-                {service.horaApertura} - {service.horaCierre}
-              </td>
-              <td
-                className={`service-availability ${service.disponible ? "available" : "unavailable"
-                  }`}
-              >
-                <span>
+            <TableRow key={service.id}>
+              <TableCell>{service.nombre}</TableCell>
+              <TableCell>{ServiceTypes[service.idTipoServicio - 1]}</TableCell>
+              <TableCell>{service.precio} {service.moneda.toUpperCase()}</TableCell>
+              <TableCell>{service.horaApertura} - {service.horaCierre}</TableCell>
+              <TableCell>
+                <Badge variant={"default"} className={service.disponible ? "bg-green-500" : "bg-destructive"}>
                   {service.disponible ? "Disponible" : "No Disponible"}
-                </span>
-              </td>
-              <td className="service-actions">
-                <div>
-                  <Button handleClick={() => onEdit(service)} disabled={false}>
-                    <FontAwesomeIcon icon={faPen}></FontAwesomeIcon>
-                  </Button>
-                  <Button
-                    handleClick={() => onDelete(service.id)}
-                    disabled={false}
-                  >
-                    <FontAwesomeIcon icon={faTrashAlt}></FontAwesomeIcon>
-                  </Button>
-                </div>
-              </td>
-            </tr>
+                </Badge>
+              </TableCell>
+              <TableCell className="flex items-center justify-end gap-2">
+                <Button onClick={() => onEdit(service)}>
+                  <Pen />
+                </Button>
+                <Button
+                  onClick={() => onDelete(service.id)}
+                >
+                  <Trash />
+                </Button>
+              </TableCell>
+            </TableRow>
           ))}
-        </tbody>
-      </table>
+        </TableBody>
+      </Table>
     </div>
   );
 };

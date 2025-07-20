@@ -62,7 +62,7 @@ const ServiceList: React.FC<ServiceListProps> = ({
           ))}
         </TableBody>
       </Table>
-    </div>
+    </div >
   );
 };
 

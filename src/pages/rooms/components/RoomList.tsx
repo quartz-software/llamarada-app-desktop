@@ -12,9 +12,9 @@ interface RoomListProps {
 const RoomList: FC<RoomListProps> = ({ rooms }) => {
   const nav = useNavigate();
   return (
-    <div className="rounded-lg border">
+    <div className="overflow-hidden rounded-lg border">
       <Table>
-        <TableHeader className="sticky top-0 z-10 bg-muted">
+        <TableHeader className="bg-muted top-0 z-10">
           <TableRow>
             <TableHead>Id</TableHead>
             <TableHead>Numero</TableHead>
@@ -22,7 +22,7 @@ const RoomList: FC<RoomListProps> = ({ rooms }) => {
             <TableHead>Capacidad</TableHead>
             {/* <TableHead>Precio/noche</TableHead> */}
             <TableHead>Estado</TableHead>
-            <TableHead></TableHead>
+            <TableHead className="text-center">Ver</TableHead>
           </TableRow>
         </TableHeader>
         <TableBody>
@@ -44,7 +44,7 @@ const RoomList: FC<RoomListProps> = ({ rooms }) => {
                       ? habitacion.estado.nombre.charAt(0).toUpperCase() + habitacion.estado.nombre.slice(1)
                       : ""}
                   </TableCell>
-                  <TableCell className="text-end">
+                  <TableCell className="text-center">
                     <Button
                       variant="outline"
                       type="button"

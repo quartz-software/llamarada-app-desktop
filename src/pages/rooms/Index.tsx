@@ -1,15 +1,26 @@
 import { useEffect, useState } from "react";
-import Input from "../../shared/components/Input";
-import Button from "../../shared/components/Button";
 import "./Index.css";
 import { useNavigate } from "react-router-dom";
-import FormField from "../../shared/components/FormField";
 import { Habitacion } from "@/shared/types/db/habitacion";
 import RoomList from "./components/RoomList";
+import { Button } from "@/shared/components/ui/button";
+import { Input } from "@/shared/components/ui/input";
+import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from "@/shared/components/ui/select";
+import { Label } from "@/shared/components/ui/label";
 
 const Index = () => {
   const nav = useNavigate();
   const [roomsData, setRoomsData] = useState<Habitacion[]>([]);
+
+  const [searchNumero, setSearchNumero] = useState("")
+  const [tipoFiltro, setTipoFiltro] = useState("all")
+
+  const filteredRooms = roomsData.filter((room) => {
+    const matchesNumero = room.numeroHabitacion.includes(searchNumero)
+    const matchesTipo = tipoFiltro === "all" ? true : room.tipo?.nombre?.toLowerCase() === tipoFiltro
+    return matchesNumero && matchesTipo
+  })
+
   async function getData() {
     try {
       const url = "/api/rooms";
@@ -25,29 +36,46 @@ const Index = () => {
     getData();
   }, []);
   return (
-    <div>
-      <h1>Habitaciones</h1>
-      <div className="div--search">
-        <FormField label="Buscar" errorMessage="">
-          <Input
-            handleInput={() => { }}
-            resetMessage={() => { }}
-            placeholder="Buscar"
-            type="text"
-            value=""
-          />
-        </FormField>
+    <div className="space-y-5">
+      <h1 className="font-bold text-2xl">Habitaciones</h1>
+      <div className="flex justify-between items-end">
+        <div className="flex gap-4">
+          <div>
+            <Label className="mb-2">Buscar</Label>
+            <Input
+              placeholder="Número de habitación..."
+              value={searchNumero}
+              onChange={(e) => setSearchNumero(e.target.value)}
+            />
+          </div>
+          <div>
+            <Label className="mb-2">Tipo</Label>
+            <Select
+              value={tipoFiltro}
+              onValueChange={(value) => setTipoFiltro(value)}
+            >
+              <SelectTrigger className="w-[130px]">
+                <SelectValue placeholder="Tipo de habitación" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectGroup>
+                  <SelectItem value="all">Todos</SelectItem>
+                  <SelectItem value="normal">Normal</SelectItem>
+                  <SelectItem value="suite">Suite</SelectItem>
+                  <SelectItem value="premium">Premium</SelectItem>
+                </SelectGroup>
+              </SelectContent>
+            </Select>
+          </div>
+        </div>
         <Button
-          disabled={false}
-          handleClick={() => {
-            nav(`/rooms/form`);
-          }}
+          onClick={() => { nav(`/rooms/form`); }}
         >
           Agregar
         </Button>
       </div>
-      <RoomList rooms={roomsData} />
-    </div>
+      <RoomList rooms={filteredRooms} />
+    </div >
   );
 };
 

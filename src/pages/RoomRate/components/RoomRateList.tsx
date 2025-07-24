@@ -1,7 +1,7 @@
 import { Button } from "@/shared/components/ui/button"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/shared/components/ui/table"
 import { Tarifa } from "@/shared/types/db/tarifa"
-import { ArrowUpRightFromSquareIcon } from "lucide-react"
+import { Pen } from "lucide-react"
 import { FC } from "react"
 import { useNavigate } from "react-router-dom"
 
@@ -45,12 +45,12 @@ const RoomRateList: FC<RoomRateListProps> = ({ rates }) => {
                 <TableCell>{tarifa.activo ? "Activo" : "Deshabilitado"}</TableCell>
                 <TableCell className="text-center">
                   <Button
-                    variant="outline"
+                    variant="ghost"
                     type="button"
                     className="h-8 w-8 p-0"
                     onClick={() => nav(`/rates/edit?id=${tarifa.id}`)}
                   >
-                    <ArrowUpRightFromSquareIcon />
+                    <Pen className="text-blue-600" />
                   </Button>
                 </TableCell>
               </TableRow>

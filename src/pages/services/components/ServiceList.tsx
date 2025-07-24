@@ -21,7 +21,7 @@ const ServiceList: React.FC<ServiceListProps> = ({
     "Limpieza"
   ];
   return (
-    <div className="rounded-lg border my-5">
+    <div className="rounded-lg border my-5 overflow-hidden">
       <Table>
         <TableHeader className="sticky top-0 z-10 bg-muted">
           <TableRow>
@@ -34,32 +34,43 @@ const ServiceList: React.FC<ServiceListProps> = ({
           </TableRow>
         </TableHeader>
         <TableBody>
-          {services.map((service) => (
-            <TableRow key={service.id}>
-              <TableCell>{service.nombre}</TableCell>
-              <TableCell>{ServiceTypes[service.idTipoServicio - 1]}</TableCell>
-              <TableCell>{service.precio} {service.moneda.toUpperCase()}</TableCell>
-              <TableCell>{service.horaApertura} - {service.horaCierre}</TableCell>
-              <TableCell>
-                <Badge variant={"default"} className={service.disponible ? "bg-green-500" : "bg-destructive"}>
-                  {service.disponible ? "Disponible" : "No Disponible"}
-                </Badge>
-              </TableCell>
-              <TableCell className="flex items-center justify-end gap-2">
-                <Button
-                  variant="default"
-                  onClick={() => onEdit(service)}>
-                  <Pen />
-                </Button>
-                <Button
-                  variant="destructive"
-                  onClick={() => onDelete(service.id)}
-                >
-                  <Trash />
-                </Button>
-              </TableCell>
-            </TableRow>
-          ))}
+          {services.length !== 0 ?
+            (services.map((service) => (
+              <TableRow key={service.id}>
+                <TableCell>{service.nombre}</TableCell>
+                <TableCell>{ServiceTypes[service.idTipoServicio - 1]}</TableCell>
+                <TableCell>{service.precio} {service.moneda.toUpperCase()}</TableCell>
+                <TableCell>{service.horaApertura} - {service.horaCierre}</TableCell>
+                <TableCell>
+                  <Badge variant={"default"} className={service.disponible ? "bg-green-500" : "bg-destructive"}>
+                    {service.disponible ? "Disponible" : "No Disponible"}
+                  </Badge>
+                </TableCell>
+                <TableCell className="flex items-center justify-end gap-2">
+                  <Button
+                    variant="default"
+                    size="icon"
+                    className="h-8 w-8 p-0"
+                    onClick={() => onEdit(service)}>
+                    <Pen />
+                  </Button>
+                  <Button
+                    variant="destructive"
+                    size="icon"
+                    className="h-8 w-8 p-0"
+                    onClick={() => onDelete(service.id)}
+                  >
+                    <Trash />
+                  </Button>
+                </TableCell>
+              </TableRow>
+            ))) : (
+              <TableRow>
+                <TableCell colSpan={6} className="h-24 text-center">
+                  No hay resultados.
+                </TableCell>
+              </TableRow>
+            )}
         </TableBody>
       </Table>
     </div >

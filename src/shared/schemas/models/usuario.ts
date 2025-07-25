@@ -2,9 +2,9 @@ import { z } from "zod";
 
 export const UsuarioCreateSchema = z.object({
   correo: z
-    .string({ required_error: "El correo es obligatorio" })
+    .string().min(1, "El correo es obligatorio")
     .email("Debe ser un correo electrónico válido"),
-  password: z.string(),
+  password: z.string().min(1, "Ingrese una contrseña"),
 });
 export const UsuarioLoginSchema = UsuarioCreateSchema;
 

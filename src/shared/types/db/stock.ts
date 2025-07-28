@@ -5,6 +5,7 @@ import { ModificacionStock } from "./modificacion-stock";
 export interface Stock {
   id: number;
   nombre: string;
+  precio: number;
   cantidad: number;
   unidadMedida: string;
   idCategoria: number;

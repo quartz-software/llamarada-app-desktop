@@ -4,6 +4,7 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import { Badge } from "@/shared/components/ui/badge";
 import { Button } from "@/shared/components/ui/button";
 import { Pen, Trash } from "lucide-react";
+import { priceFormat } from "@/shared/utils/priceFormat";
 
 interface ServiceListProps {
   services: Servicio[];
@@ -39,7 +40,7 @@ const ServiceList: React.FC<ServiceListProps> = ({
               <TableRow key={service.id}>
                 <TableCell>{service.nombre}</TableCell>
                 <TableCell>{ServiceTypes[service.idTipoServicio - 1]}</TableCell>
-                <TableCell>{service.precio} {service.moneda.toUpperCase()}</TableCell>
+                <TableCell>{priceFormat(service.precio)} {service.moneda.toUpperCase()}</TableCell>
                 <TableCell>{service.horaApertura} - {service.horaCierre}</TableCell>
                 <TableCell>
                   <Badge variant={"default"} className={service.disponible ? "bg-green-500" : "bg-destructive"}>

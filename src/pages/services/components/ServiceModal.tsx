@@ -187,8 +187,9 @@ const ServiceModal: React.FC<ServiceModalProps> = ({ onSave }) => {
                         <Input
                           type="number"
                           placeholder="Precio"
-                          value={field.value.toFixed(2) ?? ""}
+                          value={field.value?.toFixed(2) ?? ""}
                           min={0}
+                          step="0.01"
                           onChange={(e) => {
                             const val = parseFloat(e.target.value);
                             field.onChange(isNaN(val) ? 0 : val);

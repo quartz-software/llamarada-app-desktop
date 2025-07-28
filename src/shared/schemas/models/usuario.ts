@@ -2,11 +2,16 @@ import { z } from "zod";
 
 export const UsuarioCreateSchema = z.object({
   correo: z
-    .string().min(1, "El correo es obligatorio")
+    .string()
+    .email("Debe ser un correo electrónico válido"),
+  password: z.string(),
+});
+export const UsuarioLoginSchema = UsuarioCreateSchema.extend({
+  correo: z
+    .string().min(0, "El correo es obligatorio")
     .email("Debe ser un correo electrónico válido"),
   password: z.string().min(1, "Ingrese una contrseña"),
 });
-export const UsuarioLoginSchema = UsuarioCreateSchema;
 
 export const UsuarioUpdateSchema = UsuarioCreateSchema.partial();
 

@@ -30,12 +30,15 @@ const BookingForm = () => {
 
   const form = useForm<ReservaType>({
     resolver: zodResolver(ReservaCreateSchema),
+    defaultValues: {
+      numAdultos: 0,
+      numNinos: 0,
+    }
   })
 
   const {
     handleSubmit,
     control,
-    reset,
     formState: { isSubmitting }
   } = form
 
@@ -220,6 +223,7 @@ const BookingForm = () => {
                   <FormControl>
                     <Input
                       {...field}
+                      min={0}
                       type="number"
                       placeholder="Cantidad de adultos"
                     />
@@ -237,6 +241,7 @@ const BookingForm = () => {
                   <FormControl>
                     <Input
                       {...field}
+                      min={0}
                       type="number"
                       placeholder="Cantidad de menores de edad"
                     />
@@ -333,8 +338,8 @@ const BookingForm = () => {
             />
           </div>
           <div className="flex gap-4 justify-end">
-            <Button type="submit">
-              Reservar
+            <Button type="submit" disabled={isSubmitting}>
+              {!isSubmitting ? "Reservar" : "Reservando..."}
             </Button>
             <Button
               type="button"

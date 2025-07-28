@@ -5,6 +5,9 @@ import { Stock } from "@/shared/types/db/stock";
 import StockModal from "./components/StockModal";
 import StockModalEdit from "./components/StockModalEdit";
 import { toast } from "sonner";
+import { Label } from "@/shared/components/ui/label";
+import { Input } from "@/shared/components/ui/input";
+import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from "@/shared/components/ui/select";
 // import { Button } from "@/shared/components/ui/button";
 
 const Index = () => {
@@ -19,6 +22,13 @@ const Index = () => {
     nombre: "",
     cantidad: 0,
   });
+  const [searchNombre, setSearchNombre] = useState("")
+  const [categoriaFiltro, setCategoriaFiltro] = useState("all")
+  const filteredStock = stock.filter((i) => {
+    const matchesNombre = i.nombre.toLowerCase().trim().includes(searchNombre.toLowerCase().trim())
+    const matchesTipo = categoriaFiltro === "all" ? true : String(i.idCategoria) === categoriaFiltro
+    return matchesNombre && matchesTipo
+  })
 
   const handleSave = async (item: Stock) => {
     let url = `/api/stock/${item.id > 0 ? item.id : ""}`
@@ -83,7 +93,38 @@ const Index = () => {
   return (
     <div className="space-y-6">
       <h1>Inventario</h1>
-      <StockModal onSave={handleSave} />
+      <div className="flex justify-between items-end">
+        <div className="flex gap-4">
+          <div>
+            <Label className="mb-2">Buscar</Label>
+            <Input
+              placeholder="Nombre..."
+              value={searchNombre}
+              onChange={(e) => setSearchNombre(e.target.value)}
+            />
+          </div>
+          <div>
+            <Label className="mb-2">Tipo</Label>
+            <Select
+              value={categoriaFiltro}
+              onValueChange={(value) => setCategoriaFiltro(value)}
+            >
+              <SelectTrigger className="w-[130px]">
+                <SelectValue placeholder="Tipo de habitación" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectGroup>
+                  <SelectItem value="all">Todos</SelectItem>
+                  <SelectItem value="1">Limpieza</SelectItem>
+                  <SelectItem value="2">Alimento</SelectItem>
+                  <SelectItem value="3">Mantenimiento</SelectItem>
+                </SelectGroup>
+              </SelectContent>
+            </Select>
+          </div>
+        </div>
+        <StockModal onSave={handleSave} />
+      </div>
       <StockModalEdit
         item={itemToEdit}
         onSave={handleSave}
@@ -91,7 +132,7 @@ const Index = () => {
         setOpen={setFormOpen}
       />
       <StockList
-        stock={stock}
+        stock={filteredStock}
         onEdit={handleEdit}
         onDelete={handleDelete}
       />

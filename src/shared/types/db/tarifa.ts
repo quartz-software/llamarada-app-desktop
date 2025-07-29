@@ -7,5 +7,5 @@ export interface Tarifa {
   precio: number;
   activo: boolean;
 
-  habitaciones?: Habitacion[];
+  habitacionesIds?: number[];
 }

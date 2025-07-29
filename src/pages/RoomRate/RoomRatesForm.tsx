@@ -336,8 +336,8 @@ const RoomRatesForm = () => {
           </div>
 
           <div className="col-span-2 text-right space-x-4">
-            <Button type="submit">
-              Guardar
+            <Button type="submit" disabled={isSubmitting}>
+              {isSubmitting ? "Guardando..." : "Guardar"}
             </Button>
             <Button
               type="button"

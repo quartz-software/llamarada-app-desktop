@@ -125,7 +125,6 @@ const RoomRatesForm = () => {
   }, [id]);
   return (
     <div>
-      <h1 className="font-bold text-2xl mb-6">Tarifa</h1>
       <Form {...form}>
         <form
           className="grid grid-cols-2 gap-6"

@@ -33,7 +33,6 @@ const RoomRates = () => {
 
   return (
     <div className="space-y-5">
-      <h1 className="font-bold text-2xl">Tarifas de habitación</h1>
       <div className="flex justify-between items-end">
         <div>
           <Label className="mb-2 block">Buscar por precio</Label>

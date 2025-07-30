@@ -37,7 +37,6 @@ const Index = () => {
   }, []);
   return (
     <div className="space-y-5">
-      <h1 className="font-bold text-2xl">Habitaciones</h1>
       <div className="flex justify-between items-end">
         <div className="flex gap-4">
           <div>

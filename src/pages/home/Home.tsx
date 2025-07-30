@@ -2,11 +2,11 @@
 import llama from "../LLamarada.svg";
 const Home = () => {
   return (
-    <div style={{ minHeight: "100vh", display: "flex", flexDirection: "column", justifyContent: "center", WebkitAlignItems: "center" }}>
+    <div style={{ display: "flex", flexDirection: "column", justifyContent: "center", WebkitAlignItems: "center" }}>
+      < img src={llama} alt="" />
       <h1 style={{
         fontSize: "4rem"
       }}>Sistema Hotelero</h1>
-      < img src={llama} alt="" />
     </div>
   );
 };

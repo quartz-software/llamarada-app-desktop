@@ -35,7 +35,7 @@
   padding: 0.5rem;
   font-weight: 500;
 
-  background-color: #1f1f1f;
+  background-color: oklch(23.929% 0.00003 271.152);
   color: #ccc;
   font-size: 1rem;
   border: none;
@@ -46,7 +46,7 @@
 }
 
 .navbar__link:hover {
-  background-color: #252525;
+  background-color: oklch(26.448% 0.00003 271.152);
   color: #ccc;
 }
 

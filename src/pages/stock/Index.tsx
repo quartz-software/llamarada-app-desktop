@@ -91,8 +91,7 @@ const Index = () => {
   }, []);
 
   return (
-    <div className="space-y-6">
-      <h1>Inventario</h1>
+    <div className="space-y-5">
       <div className="flex justify-between items-end">
         <div className="flex gap-4">
           <div>

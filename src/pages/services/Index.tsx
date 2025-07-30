@@ -79,8 +79,7 @@ const Services: React.FC = () => {
   }, []);
 
   return (
-    <div className="">
-      <h1 className="mb-5 font-bold text-2xl">Gestión de Servicios</h1>
+    <div>
       <ServiceModal
         onSave={handleAddService}
       />

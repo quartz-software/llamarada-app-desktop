@@ -126,7 +126,6 @@ const Habitaciones_formulario = () => {
   }, []);
   return (
     <div className="flex items-center flex-col">
-      <h1 className="font-bold text-2xl mt-8">Habitación</h1>
       <Form {...form}>
         <form
           className="space-y-6 min-w-96 mt-6"
@@ -136,7 +135,7 @@ const Habitaciones_formulario = () => {
             control={control}
             name="numeroHabitacion"
             render={({ field }) => (
-              <FormItem>
+              <FormItem>z
                 <FormLabel>Numero de Habiacion:</FormLabel>
                 <FormControl>
                   <Input

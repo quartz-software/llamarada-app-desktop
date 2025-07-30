@@ -97,7 +97,7 @@ const BookingForm = () => {
   }, []);
   // console.log("Errores del formulario:", form.formState.errors);
   return (
-    <div className="w-full max-w-3">
+    <div className="w-full">
       <div className="info--room my-10">
         <h3>DETALLES DE HABITACIÓN</h3>
         <div className="info--row">

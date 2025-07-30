@@ -43,7 +43,6 @@ const Habitaciones = () => {
 
   return (
     <div className="space-y-3">
-      <h1 className="font-bold text-2xl">Reservaciones</h1>
       <h3 className="font-bold ">Busqueda</h3>
       <Popover>
         <PopoverTrigger asChild>

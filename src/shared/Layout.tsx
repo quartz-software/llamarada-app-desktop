@@ -1,36 +1,28 @@
-import {
-  faBoxes,
-  faCalendarCheck,
-  faDollarSign,
-  faDoorClosed,
-  faHome,
-  // faPlusCircle,
-  faSignOut,
-  faTags,
-  faTasks,
-  // faTasks,
-  faTools,
-} from "@fortawesome/free-solid-svg-icons";
 import { Link, Outlet, useLocation, useNavigate } from "react-router-dom";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import "./Layout.css";
+// import "./Layout.css";
 import logout from "./hooks/useLogout";
 import useHasRole from "./hooks/useHasRole";
+import Llamarada from "./assets/LLamarada.svg";
+import { Sidebar, SidebarContent, SidebarFooter, SidebarGroup, SidebarGroupLabel, SidebarHeader, SidebarInset, SidebarMenu, SidebarMenuButton, SidebarMenuItem, SidebarProvider, SidebarTrigger } from "./components/ui/sidebar";
+import { Bed, CalendarCheck, ConciergeBell, DollarSign, Home, Hotel, LogOut, ShoppingBag } from "lucide-react";
+import { useState } from "react";
 
 const Layout = () => {
   const isAdmin = useHasRole("administrador");
   const navigate = useNavigate();
   const location = useLocation();
+  const [openSlidebar, setOpenSlidebar] = useState(true)
+  const [currentPage, setCurrentPage] = useState("Inicio")
 
   const listItems = [
     {
-      icon: faHome,
+      icon: Home,
       path: "/home",
       label: "Inicio",
       show: true,
     },
     {
-      icon: faTools,
+      icon: ConciergeBell,
       path: "/services",
       label: "Servicios",
       show: isAdmin,
@@ -42,7 +34,7 @@ const Layout = () => {
       show: true,
     }, */
     {
-      icon: faDoorClosed,
+      icon: Bed,
       path: "/rooms",
       label: "Habitaciones",
       show: isAdmin,
@@ -54,7 +46,7 @@ const Layout = () => {
       show: isAdmin,
     }, */
     {
-      icon: faDollarSign,
+      icon: DollarSign,
       path: "/rates",
       label: "Tarifas",
       show: isAdmin,
@@ -66,13 +58,13 @@ const Layout = () => {
       show: true,
     }, */
     {
-      icon: faCalendarCheck,
+      icon: CalendarCheck,
       path: "/bookings",
       label: "Reservaciones",
       show: true,
     },
     {
-      icon: faBoxes,
+      icon: ShoppingBag,
       path: "/stock",
       label: "Inventario",
       show: isAdmin,
@@ -85,46 +77,69 @@ const Layout = () => {
   const isActiveLink = (path: string) => location.pathname === path;
 
   return (
-    <div className="app_container">
-      <nav className="navbar">
-        <ul className="navbar__list">
-          {listItems.map((item, index) => {
-            return (
-              item.show && (
-                <li
-                  key={index}
-                  className={`navbar__item ${isActiveLink(item.path) ? "active" : ""
-                    }`}
-                >
-                  <Link className="navbar__link" to={item.path}>
-                    <i>
-                      <FontAwesomeIcon icon={item.icon} />
-                    </i>
-                    <span>{item.label}</span>
-                  </Link>
-                </li>
-              )
-            );
-          })}
-        </ul>
-        <ul className="navbar__list">
-          <li className="navbar__item">
-            <button
-              className="navbar__link navbar__link--danger"
-              onClick={handleLogout}
-            >
-              <i>
-                <FontAwesomeIcon icon={faSignOut} />
-              </i>
-              <span>Salir</span>
-            </button>
-          </li>
-        </ul>
-      </nav>
-      <div id="content">
-        <Outlet />
-      </div>
-    </div>
+    <SidebarProvider open={openSlidebar} onOpenChange={setOpenSlidebar}>
+      <Sidebar collapsible="icon">
+        <SidebarHeader>
+          <SidebarMenu>
+            <SidebarMenuItem className="h-10 flex gap-4 items-center">
+              <img
+                src={Llamarada}
+                alt="Llamarada"
+                className="h-full"
+              />
+              {openSlidebar &&
+                <span className="font-bold text-lg text-nowrap">Hotell Llamarada</span>
+              }
+              {/* <SidebarMenuButton className="h-12">
+              </SidebarMenuButton> */}
+            </SidebarMenuItem>
+          </SidebarMenu>
+        </SidebarHeader>
+        <SidebarContent>
+          <SidebarGroup>
+            <SidebarGroupLabel>Opciones</SidebarGroupLabel>
+            <SidebarMenu>
+              {listItems.map((item) => (
+                <SidebarMenuItem key={item.label}>
+                  <SidebarMenuButton asChild
+                    className={`font-medium ${isActiveLink(item.path) ? "bg-[#017db0]" : ""} hover:bg-[#005577]`}
+                  >
+                    <Link to={item.path} onClick={() => { setCurrentPage(item.label) }}>
+                      <item.icon />
+                      <span>{item.label}</span>
+                    </Link>
+                  </SidebarMenuButton>
+                </SidebarMenuItem>
+              ))}
+            </SidebarMenu>
+          </SidebarGroup>
+        </SidebarContent>
+        <SidebarFooter>
+          <SidebarMenu>
+            <SidebarMenuItem>
+              <SidebarMenuButton
+                className="bg-destructive hover:bg-destructive/80"
+                onClick={handleLogout}
+              >
+                <LogOut />
+                <span>Salir</span>
+              </SidebarMenuButton>
+            </SidebarMenuItem>
+          </SidebarMenu>
+        </SidebarFooter>
+      </Sidebar>
+      <SidebarInset>
+        <div className="flex flex-col items-center w-full">
+          <header className="flex w-full gap-6 p-4">
+            <SidebarTrigger />
+            <h1 className="font-bold">{currentPage}</h1>
+          </header>
+          <div id="content" className="w-full max-w-5xl p-4 min-h-full">
+            <Outlet />
+          </div>
+        </div>
+      </SidebarInset>
+    </SidebarProvider >
   );
 };
 

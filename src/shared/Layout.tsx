@@ -4,7 +4,7 @@ import logout from "./hooks/useLogout";
 import useHasRole from "./hooks/useHasRole";
 import Llamarada from "./assets/LLamarada.svg";
 import { Sidebar, SidebarContent, SidebarFooter, SidebarGroup, SidebarGroupLabel, SidebarHeader, SidebarInset, SidebarMenu, SidebarMenuButton, SidebarMenuItem, SidebarProvider, SidebarTrigger } from "./components/ui/sidebar";
-import { Bed, CalendarCheck, ConciergeBell, DollarSign, Home, Hotel, LogOut, ShoppingBag } from "lucide-react";
+import { Bed, CalendarCheck, ConciergeBell, DollarSign, Home, LogOut, ShoppingBag } from "lucide-react";
 import { useState } from "react";
 
 const Layout = () => {
@@ -88,7 +88,7 @@ const Layout = () => {
                 className="h-full"
               />
               {openSlidebar &&
-                <span className="font-bold text-lg text-nowrap">Hotell Llamarada</span>
+                <span className="font-bold text-lg text-nowrap">Hotel Llamarada</span>
               }
               {/* <SidebarMenuButton className="h-12">
               </SidebarMenuButton> */}
@@ -102,7 +102,7 @@ const Layout = () => {
               {listItems.map((item) => (
                 <SidebarMenuItem key={item.label}>
                   <SidebarMenuButton asChild
-                    className={`font-medium ${isActiveLink(item.path) ? "bg-[#017db0]" : ""} hover:bg-[#005577]`}
+                    className={`${isActiveLink(item.path) ? "bg-primary/90" : ""} hover:bg-primary/60`}
                   >
                     <Link to={item.path} onClick={() => { setCurrentPage(item.label) }}>
                       <item.icon />

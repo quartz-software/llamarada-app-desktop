@@ -6,11 +6,15 @@ import RoomRateList from "./components/RoomRateList";
 import { Label } from "@/shared/components/ui/label";
 import { Input } from "@/shared/components/ui/input";
 import { Button } from "@/shared/components/ui/button";
+import AlertDelete from "@/shared/components/AlertDelete";
+import { toast } from "sonner";
 
 const RoomRates = () => {
   const nav = useNavigate();
   const [roomRatesData, setRoomRatesData] = useState<Tarifa[]>([]);
   const [searchText, setSearchText] = useState("")
+  const [itemToDelete, setItemToDelete] = useState(0)
+  const [isAlertOpen, setAlertOpen] = useState(false);
 
   async function getData() {
     try {
@@ -22,6 +26,28 @@ const RoomRates = () => {
       console.error(error);
     }
   }
+
+  const OpenAlertDelet = (id: number) => {
+    setItemToDelete(id);
+    setAlertOpen(true);
+  };
+
+  const handleDelete = async (id: number) => {
+    try {
+      const res = await fetch(`/api/rates/${id}`, { method: "DELETE" })
+      if (res.status === 204) {
+        getData();
+        setAlertOpen(false);
+        toast.success("Tarifa eliminado")
+      }
+      else if (res.status === 500) {
+        toast.error("No se pudo eliminar la tarifa")
+      }
+    } catch (error) {
+      console.error(error);
+
+    }
+  };
 
   useEffect(() => {
     getData();
@@ -46,7 +72,16 @@ const RoomRates = () => {
         </div>
         <Button onClick={() => nav("/rates/edit")}>Agregar</Button>
       </div>
-      <RoomRateList rates={filteredRates} />
+      <AlertDelete
+        id={itemToDelete}
+        onDelete={handleDelete}
+        open={isAlertOpen}
+        setOpen={setAlertOpen}
+      />
+      <RoomRateList
+        rates={filteredRates}
+        onDelete={OpenAlertDelet}
+      />
     </div>
   );
 };

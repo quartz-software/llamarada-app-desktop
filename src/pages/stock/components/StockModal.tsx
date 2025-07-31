@@ -55,7 +55,7 @@ const StockModal: FC<StockModalProps> = ({ onSave }) => {
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
-        <Button variant="default">Agregar Producto</Button>
+        <Button variant="default">Agregar producto</Button>
       </DialogTrigger>
       <DialogContent>
         <DialogHeader>

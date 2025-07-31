@@ -1,5 +1,4 @@
 import { useEffect, useState } from "react";
-// import "./Index.css";;
 import StockList from "./components/StockList";
 import { Stock } from "@/shared/types/db/stock";
 import StockModal from "./components/StockModal";
@@ -8,12 +7,12 @@ import { toast } from "sonner";
 import { Label } from "@/shared/components/ui/label";
 import { Input } from "@/shared/components/ui/input";
 import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from "@/shared/components/ui/select";
-// import { Button } from "@/shared/components/ui/button";
+import AlertDelete from "@/shared/components/AlertDelete";
 
 const Index = () => {
   const [stock, setStock] = useState<Stock[]>([]);
   const [isFormOpen, setFormOpen] = useState(false);
-  const [isYesNoOpen, setYesNoOpen] = useState(false);
+  const [isAlertOpen, setAlertOpen] = useState(false);
   const [itemToEdit, setItemToEdit] = useState<Stock>({
     id: -1,
     precio: 0.00,
@@ -22,6 +21,7 @@ const Index = () => {
     nombre: "",
     cantidad: 0,
   });
+  const [itemToDelete, setItemToDelete] = useState(0)
   const [searchNombre, setSearchNombre] = useState("")
   const [categoriaFiltro, setCategoriaFiltro] = useState("all")
   const filteredStock = stock.filter((i) => {
@@ -52,30 +52,23 @@ const Index = () => {
     setItemToEdit(item);
     setFormOpen(true);
   };
-  const handleDelete = (id: number) => {
-    fetch(`/api/stock/${id}`, { method: "DELETE" }).then((req) => {
-      if (req.status === 200) {
-        setStock([...stock.filter((i) => i.id != id)]);
-        setYesNoOpen(false);
-      }
-    });
+  const OpenAlertDelet = (id: number) => {
+    setItemToDelete(id);
+    setAlertOpen(true);
   };
-  /*const modalConfirm = (
-    <Modal
-      onClose={() => { }}
-      title="¿Estas seguro que deseas eliminar el elemento?"
-    >
-      <Button handleClick={() => handleDelete(itemToEdit.id)}>Eliminar</Button>
-      <Button
-        handleClick={() => {
-          setYesNoOpen(false);
-        }}
-      >
-        Cancelar
-      </Button>
-    </Modal>
-  ); */
+  const handleDelete = async (id: number) => {
+    try {
+      const res = await fetch(`/api/stock/${id}`, { method: "DELETE" })
+      if (res.status === 204) {
+        getStockData();
+        setAlertOpen(false);
+        toast.success("Producto eliminado")
+      }
+    } catch (error) {
+      console.error(error);
 
+    }
+  };
   async function getStockData() {
     try {
       const res = await fetch("/api/stock")
@@ -124,17 +117,27 @@ const Index = () => {
         </div>
         <StockModal onSave={handleSave} />
       </div>
+
       <StockModalEdit
         item={itemToEdit}
         onSave={handleSave}
         open={isFormOpen}
         setOpen={setFormOpen}
       />
+
+      <AlertDelete
+        id={itemToDelete}
+        onDelete={handleDelete}
+        open={isAlertOpen}
+        setOpen={setAlertOpen}
+      />
+
       <StockList
         stock={filteredStock}
         onEdit={handleEdit}
-        onDelete={handleDelete}
+        onDelete={OpenAlertDelet}
       />
+
     </div>
   );
 };

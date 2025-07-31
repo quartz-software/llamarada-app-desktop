@@ -1,12 +1,13 @@
 import { Button } from "@/shared/components/ui/button"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/shared/components/ui/table"
 import { Tarifa } from "@/shared/types/db/tarifa"
-import { Pen } from "lucide-react"
+import { Pen, Trash } from "lucide-react"
 import { FC } from "react"
 import { useNavigate } from "react-router-dom"
 
 interface RoomRateListProps {
   rates: Tarifa[]
+  onDelete: (idTarifa: number) => void
 }
 
 const formatDate = (dateData?: Date) => {
@@ -18,7 +19,7 @@ const formatDate = (dateData?: Date) => {
   return `${dateParts[2]}/${dateParts[1]}/${dateParts[0]}`;
 };
 
-const RoomRateList: FC<RoomRateListProps> = ({ rates }) => {
+const RoomRateList: FC<RoomRateListProps> = ({ rates, onDelete }) => {
   const nav = useNavigate();
 
   return (
@@ -31,7 +32,7 @@ const RoomRateList: FC<RoomRateListProps> = ({ rates }) => {
             <TableHead>Fecha Fin</TableHead>
             <TableHead>Precio/noche</TableHead>
             <TableHead>Estado</TableHead>
-            <TableHead className="text-center">Editar</TableHead>
+            <TableHead></TableHead>
           </TableRow>
         </TableHeader>
         <TableBody>
@@ -43,14 +44,22 @@ const RoomRateList: FC<RoomRateListProps> = ({ rates }) => {
                 <TableCell>{formatDate(tarifa.fechaFin)}</TableCell>
                 <TableCell>{tarifa.precio}</TableCell>
                 <TableCell>{tarifa.activo ? "Activo" : "Deshabilitado"}</TableCell>
-                <TableCell className="text-center">
+                <TableCell className="text-end space-x-4">
                   <Button
                     variant="ghost"
                     type="button"
                     className="h-8 w-8 p-0"
                     onClick={() => nav(`/rates/edit?id=${tarifa.id}`)}
                   >
-                    <Pen className="text-blue-600" />
+                    <Pen className="text-primary" />
+                  </Button>
+                  <Button
+                    variant="ghost"
+                    type="button"
+                    className="h-8 w-8 p-0"
+                    onClick={() => onDelete(tarifa.id)}
+                  >
+                    <Trash className="text-destructive" />
                   </Button>
                 </TableCell>
               </TableRow>

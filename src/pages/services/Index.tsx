@@ -4,23 +4,32 @@ import ServiceModal from "./components/ServiceModal";
 import ServiceModalEdit from "./components/ServiceModalEdit";
 import ServiceList from "./components/ServiceList";
 import { Servicio } from "@/shared/types/db/servicio";
+import AlertDelete from "@/shared/components/AlertDelete";
+import { toast } from "sonner";
 
 const Services: React.FC = () => {
   const [services, setServices] = useState<Servicio[]>([]);
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const [serviceToEdit, setServiceToEdit] = useState<Servicio | null>(null);
+  const [isAlertOpen, setAlertOpen] = useState(false);
+  const [serviceToDelete, setServiceToDelete] = useState(0)
 
   const handleAddService = async (service: Servicio) => {
     try {
       const newService: Servicio = { ...service, id: Date.now() };
-      await fetch("/api/services", {
+      const res = await fetch("/api/services", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
         body: JSON.stringify(newService),
       })
-      getList()
+      if (res.status === 201) {
+        getList()
+        toast.success("Servicio agregado")
+      } else {
+        toast.error("Hubo un error al agregar el servicio")
+      }
     } catch (error) {
       console.error(error)
     }
@@ -29,15 +38,21 @@ const Services: React.FC = () => {
   const handleEditService = async (updatedService: Servicio) => {
     try {
       let url = `/api/services/${updatedService.id}`
-      await fetch(url, {
+      const res = await fetch(url, {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",
         },
         body: JSON.stringify(updatedService),
       })
-      getList()
-      setIsEditModalOpen(false);
+      if (res.status === 204) {
+        getList()
+        setIsEditModalOpen(false);
+        toast.success("Servio actualizado")
+      }
+      else {
+        toast.error("Hubo un error al actualizar el servicio")
+      }
     } catch (error) {
       console.error(error)
     }
@@ -46,15 +61,12 @@ const Services: React.FC = () => {
   const handleDeleteService = async (id: number) => {
     try {
       let url = `/api/services/${id}`
-      await fetch(url, {
-        method: "DELETE",
-        headers: {
-          "Content-Type": "application/json",
-        }
-      })
-      getList()
-      // setServices(services.filter((service) => service.id !== id));
-      setIsEditModalOpen(false);
+      const res = await fetch(url, { method: "DELETE", })
+      if (res.status === 204) {
+        getList()
+        setAlertOpen(false);
+        toast.success("Servicio eliminado")
+      }
     } catch (error) {
       console.error(error)
     }
@@ -63,6 +75,10 @@ const Services: React.FC = () => {
   const handleOpenEditModal = (service: Servicio) => {
     setServiceToEdit(service);
     setIsEditModalOpen(true);
+  };
+  const handleOpenAlertDelete = (id: number) => {
+    setServiceToDelete(id);
+    setAlertOpen(true);
   };
   async function getList() {
     try {
@@ -83,11 +99,6 @@ const Services: React.FC = () => {
       <ServiceModal
         onSave={handleAddService}
       />
-      <ServiceList
-        services={services}
-        onDelete={handleDeleteService}
-        onEdit={handleOpenEditModal}
-      />
       {isEditModalOpen && serviceToEdit && (
         <ServiceModalEdit
           service={serviceToEdit}
@@ -96,6 +107,17 @@ const Services: React.FC = () => {
           onSave={handleEditService}
         />
       )}
+      <AlertDelete
+        id={serviceToDelete}
+        onDelete={handleDeleteService}
+        open={isAlertOpen}
+        setOpen={setAlertOpen}
+      />
+      <ServiceList
+        services={services}
+        onDelete={handleOpenAlertDelete}
+        onEdit={handleOpenEditModal}
+      />
     </div>
   );
 };

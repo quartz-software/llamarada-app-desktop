@@ -12,6 +12,8 @@ import { Button } from "@/shared/components/ui/button";
 import { Textarea } from "@/shared/components/ui/textarea";
 import { ImagenHabitacion } from "@/shared/types/db/imagen-habitacion";
 import { toast } from "sonner";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/shared/components/ui/select";
+import { cn } from "@/shared/lib/utils";
 
 
 const Habitaciones_formulario = () => {
@@ -27,8 +29,8 @@ const Habitaciones_formulario = () => {
       numeroHabitacion: "",
       capacidad: 0,
       descripcion: "",
-      idTipoHabitacion: 1,
-      idEstadoHabitacion: 1,
+      idTipoHabitacion: 0,
+      idEstadoHabitacion: 0,
     }
   })
   const {
@@ -135,7 +137,7 @@ const Habitaciones_formulario = () => {
             control={control}
             name="numeroHabitacion"
             render={({ field }) => (
-              <FormItem>z
+              <FormItem>
                 <FormLabel>Numero de Habiacion:</FormLabel>
                 <FormControl>
                   <Input
@@ -159,29 +161,8 @@ const Habitaciones_formulario = () => {
                     {...field}
                     type="number"
                     placeholder="Cantidad de personas"
+                    min="0"
                   />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-          <FormField
-            control={control}
-            name="idEstadoHabitacion"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Estado de la habitacion:</FormLabel>
-                <FormControl>
-                  <select
-                    value={field.value}
-                    onChange={field.onChange}
-                  >
-                    <option value="7">No disponible</option>
-                    <option value="1">Disponible</option>
-                    <option value="2">Ocupado</option>
-                    <option value="6">Mantemiento</option>
-                    <option value="5">Limpieza</option>
-                  </select>
                 </FormControl>
                 <FormMessage />
               </FormItem>
@@ -192,33 +173,56 @@ const Habitaciones_formulario = () => {
             name="idTipoHabitacion"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Tipo de la habitacion:</FormLabel>
-                <FormControl>
-                  <select
-                    value={field.value}
-                    onChange={field.onChange}
-                  >
-                    <option value="1">Normal</option>
-                    <option value="2">Suite</option>
-                    <option value="3">Premium</option>
-                  </select>
-                </FormControl>
+                <FormLabel>Tipo de la habitación</FormLabel>
+                <Select
+                  value={String(field.value)}
+                  onValueChange={(val) => field.onChange(Number(val))}>
+                  <FormControl>
+                    <SelectTrigger
+                      className={cn("w-full",
+                        field.value == 0 ? "text-muted-foreground" : "")}>
+                      <SelectValue />
+                    </SelectTrigger>
+                  </FormControl>
+                  <SelectContent>
+                    <SelectItem value="0" hidden>Selecione un estado</SelectItem>
+                    <SelectItem value="1">Normal</SelectItem>
+                    <SelectItem value="2">Suite</SelectItem>
+                    <SelectItem value="3">Premium</SelectItem>
+                  </SelectContent>
+                </Select>
                 <FormMessage />
               </FormItem>
             )}
           />
-
-          {/* <FormField label="Precio" errorMessage="">
-          <Input
-            type="number"
-            placeholder="Precio"
-            handleInput={(value: string) => {
-              setRoomData({ ...roomData, pricePerNight: value });
-            }}
-            value={roomData.pricePerNight}
-            resetMessage={() => { }}
+          <FormField
+            control={control}
+            name="idEstadoHabitacion"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Estado</FormLabel>
+                <Select
+                  value={String(field.value)}
+                  onValueChange={(val) => field.onChange(Number(val))}>
+                  <FormControl>
+                    <SelectTrigger className={cn("w-full",
+                      field.value == 0 ? "text-muted-foreground" : "")}>
+                      <SelectValue placeholder="Seleccione un estado" />
+                    </SelectTrigger>
+                  </FormControl>
+                  <SelectContent>
+                    <SelectItem value="0">Selecione un estado</SelectItem>
+                    <SelectItem value="7">No disponible</SelectItem>
+                    <SelectItem value="1">Disponible</SelectItem>
+                    <SelectItem value="2">Ocupado</SelectItem>
+                    <SelectItem value="6">Mantemiento</SelectItem>
+                    <SelectItem value="5">Limpieza</SelectItem>
+                  </SelectContent>
+                </Select>
+                <FormMessage />
+              </FormItem>
+            )}
           />
-        </FormField> */}
           <FormField
             control={control}
             name="descripcion"
@@ -301,12 +305,13 @@ const Habitaciones_formulario = () => {
             </div>
           )}
         </div> */}
-          <div className="flex justify-end gap-6">
+          <div className="space-x-4 text-right">
             <Button type="submit">
               Guardar
             </Button>
             <Button
               type="button"
+              variant="outline"
               onClick={() => navigate("/rooms")}
             >
               Cancelar
@@ -314,7 +319,7 @@ const Habitaciones_formulario = () => {
           </div>
         </form>
       </Form>
-    </div>
+    </div >
   );
 };
 

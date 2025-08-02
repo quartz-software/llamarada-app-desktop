@@ -14,12 +14,12 @@ export const HabitacionCreateSchema = z.object({
     .optional(),
 
   idEstadoHabitacion: z.coerce
-    .number({ required_error: "Debe seleccionar un estado para la habitación" })
-    .min(1, "Debe seleccionar un estado válido"),
+    .number()
+    .min(1, "Debe seleccionar un estado"),
 
   idTipoHabitacion: z.coerce
     .number({ required_error: "Debe seleccionar un tipo de habitación" })
-    .min(1, "Debe seleccionar un tipo válido"),
+    .min(1, "Debe seleccionar el tipo de la habitación"),
 });
 
 export const HabitacionUpdateSchema = HabitacionCreateSchema.partial();

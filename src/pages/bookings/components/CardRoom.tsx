@@ -8,37 +8,42 @@ import { Badge } from "@/shared/components/ui/badge";
 
 type Props = {
   room: Habitacion;
+  checkIn?: Date;
+  checkOut?: Date;
 };
 
-const CardRoom: FC<Props> = ({ room }) => {
+const CardRoom: FC<Props> = ({ room, checkIn, checkOut }) => {
   const nav = useNavigate();
   return (
-    <Card >
+    <Card>
       <CardHeader>
-        <div className="flex items-start justify-between">
+        <div className="flex">
           <Badge
             variant="secondary"
-            className="bg-green-500 text-white dark:bg-blue-600"
+            className="bg-green-500 text-white absolute m-2"
           >
             Disponible
           </Badge>
           <img
             src={"./room1.jpg"}
             alt={`Habitación ${room.numeroHabitacion}`}
-            className="absolute right-6 w-24 h-14 object-cover rounded-md"
+            className="object-cover rounded-md"
           />
         </div>
       </CardHeader>
       <CardContent>
         <h2 className="text-lg font-semibold">Habitación {room.numeroHabitacion}</h2>
-        <p className="text-sm text-muted-foreground">{room.tipo?.nombre}</p>
+        <p className="text-sm text-muted-foreground">
+          {room.tipo?.nombre
+            ? room.tipo.nombre.charAt(0).toUpperCase() + room.tipo.nombre.slice(1)
+            : ""}
+        </p>
         <p className="text-sm text-muted-foreground">{room.capacidad} personas</p>
       </CardContent>
-
       <CardFooter>
         <Button
           className="w-full"
-          onClick={() => nav("/bookings/create", { state: { room } })}
+          onClick={() => nav("/bookings/create", { state: { room, checkIn, checkOut } })}
         >
           Reservar
         </Button>

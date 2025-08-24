@@ -16,12 +16,13 @@ const Habitaciones = () => {
 
   async function getData() {
     try {
+      
       const startDate = dateRange?.from?.toISOString().split('T')[0]
-      const endDate = dateRange?.from?.toISOString().split('T')[0]
+      const endDate = dateRange?.to?.toISOString().split('T')[0]
       const params = `?startDate=${startDate}&endDate=${endDate}`
       const url =
-        "/api/bookings/available" +
-        (dateRange && dateRange.from && dateRange.to ? params : "");
+      "/api/bookings/available" +
+      (dateRange && dateRange.from && dateRange.to ? params : "");
       const cont = {
         method: "GET",
         headers: {
@@ -78,6 +79,8 @@ const Habitaciones = () => {
             <CardRoom
               key={index}
               room={room}
+              checkIn={dateRange?.from}
+              checkOut={dateRange?.to}
             />
           );
         })}

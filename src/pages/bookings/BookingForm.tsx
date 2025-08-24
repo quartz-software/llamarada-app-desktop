@@ -21,8 +21,16 @@ import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, Command
 
 const BookingForm = () => {
   const nav = useNavigate();
+
   const location = useLocation();
   const room = location.state?.room as Habitacion;
+  const preselectedCheckIn = location.state?.checkIn
+    ? new Date(location.state.checkIn)
+    : undefined;
+  const preselectedCheckOut = location.state?.checkOut
+    ? new Date(location.state.checkOut)
+    : undefined;
+
   const [clientsData, setClientsData] = useState<Cliente[]>([]);
   const [isModalClientsOpen, setIsModalClientsOpen] = useState(false);
 
@@ -33,6 +41,8 @@ const BookingForm = () => {
     defaultValues: {
       numAdultos: 0,
       numNinos: 0,
+      checkIn: preselectedCheckIn,
+      checkOut: preselectedCheckOut,
     }
   })
 
@@ -95,7 +105,6 @@ const BookingForm = () => {
   useEffect(() => {
     getClients();
   }, []);
-  // console.log("Errores del formulario:", form.formState.errors);
   return (
     <div className="w-full">
       <div className="info--room my-10">

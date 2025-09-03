@@ -74,16 +74,22 @@ const Habitaciones = () => {
         </PopoverContent>
       </Popover>
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-4">
-        {roomsData.map((room, index) => {
-          return (
+        {roomsData.length > 0 ? (
+          roomsData.map((room, index) => (
             <CardRoom
               key={index}
               room={room}
               checkIn={dateRange?.from}
               checkOut={dateRange?.to}
             />
-          );
-        })}
+          ))
+        ) : (
+          <div className="col-span-full text-center py-10">
+            <p className="text-muted-foreground text-lg font-medium">
+              No hay habitaciones disponibles
+            </p>
+          </div>
+        )}
       </div>
     </div>
   );

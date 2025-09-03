@@ -15,7 +15,7 @@ type Props = {
 const CardRoom: FC<Props> = ({ room, checkIn, checkOut }) => {
   const nav = useNavigate();
   return (
-    <Card>
+    <Card className="gap-3">
       <CardHeader>
         <div className="flex">
           <Badge
@@ -27,7 +27,7 @@ const CardRoom: FC<Props> = ({ room, checkIn, checkOut }) => {
           <img
             src={"./room1.jpg"}
             alt={`Habitación ${room.numeroHabitacion}`}
-            className="object-cover rounded-md"
+            className="object-cover rounded-md max-h-25 w-full"
           />
         </div>
       </CardHeader>

@@ -12,6 +12,8 @@ import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "
 import { Input } from "@/shared/components/ui/input";
 
 const Login = () => {
+  const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
+
   const [formError, setFormError] = useState("");
   const { fetchRole } = useUserRole();
   const navigate = useNavigate();
@@ -33,7 +35,7 @@ const Login = () => {
 
   const postData = async (data: AuthType) => {
     try {
-      const url = "/api/auth/login";
+      const url = `${API_BASE_URL}/api/auth/login`;
       const cont = {
         method: "POST",
         headers: {
@@ -45,6 +47,7 @@ const Login = () => {
         }),
       };
       const res = await fetch(url, cont)
+      const resData = await res.json()
       if (res.status === 401) {
         setError("correo", {
           type: "manual",
@@ -56,6 +59,9 @@ const Login = () => {
         });
         setFormError("Correo o contraseña incorrecta");
       } else if (res.status == 200) {
+
+        navigate("/home");
+        localStorage.setItem("token", resData.token)
         const rol = await fetchRole();
         if (rol === "administrador" || rol === "recepcionista") {
           navigate("/home");

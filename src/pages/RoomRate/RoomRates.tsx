@@ -10,6 +10,10 @@ import AlertDelete from "@/shared/components/AlertDelete";
 import { toast } from "sonner";
 
 const RoomRates = () => {
+
+  const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
+  const token = localStorage.getItem("token")
+
   const nav = useNavigate();
   const [roomRatesData, setRoomRatesData] = useState<Tarifa[]>([]);
   const [searchText, setSearchText] = useState("")
@@ -18,8 +22,12 @@ const RoomRates = () => {
 
   async function getData() {
     try {
-      let url = "/api/rates";
-      const res = await fetch(url)
+      let url = `${API_BASE_URL}/api/rates`;
+      const res = await fetch(url, {
+        headers: {
+          Authorization: "Bearer " + token
+        }
+      })
       const data = await res.json()
       setRoomRatesData(data);
     } catch (error) {
@@ -34,7 +42,13 @@ const RoomRates = () => {
 
   const handleDelete = async (id: number) => {
     try {
-      const res = await fetch(`/api/rates/${id}`, { method: "DELETE" })
+      let url = `${API_BASE_URL}/api/rates/${id}`
+      const res = await fetch(url, {
+        method: "DELETE",
+        headers: {
+          Authorization: "Bearer " + token
+        }
+      })
       if (res.status === 204) {
         getData();
         setAlertOpen(false);

@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from "react";
 import './components/AditionalService.css';  
+import { ServicioSolicitado } from "@/shared/types/db/servicio-solicitado";
 const AditionalServices: React.FC = () => {
-  const [services, setServices] = useState<AdditionalService[]>([]);
+  const [services, setServices] = useState<ServicioSolicitado[]>([]);
 
   useEffect(() => {
     fetch("/api/additional-services")
@@ -35,9 +36,9 @@ const AditionalServices: React.FC = () => {
           {services.map((service) => (
             <tr key={service.id}>
               <td>{service.id}</td>
-              <td>{new Date(service.date).toLocaleString()}</td>
-              <td>{service.status}</td>
-              <td>{service.description || "Sin descripción"}</td>
+              <td>{new Date(service.createdAt).toLocaleString()}</td>
+              <td>{service.estado?.nombre}</td>
+              <td>{service.descripcion || "Sin descripción"}</td>
             </tr>
           ))}
         </tbody>

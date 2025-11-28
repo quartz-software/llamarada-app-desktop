@@ -19,6 +19,9 @@ import { Separator } from "@/shared/components/ui/separator";
 import { toast } from "sonner";
 
 const RoomRatesForm = () => {
+  const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
+  const token = localStorage.getItem("token")
+
   const navigate = useNavigate();
   const [params] = useSearchParams();
   const id = params.get("id");
@@ -45,7 +48,12 @@ const RoomRatesForm = () => {
 
   async function getData() {
     try {
-      const res = await fetch(`/api/rates/${id}`)
+      let url = `${API_BASE_URL}/api/rates/${id}`
+      const res = await fetch(url, {
+        headers: {
+          Authorization: "Bearer " + token
+        }
+      })
       const data = await res.json()
       reset(data);
       getRoomsData(data.habitaciones ?? [])
@@ -55,7 +63,12 @@ const RoomRatesForm = () => {
   }
   async function getRoomsData(habitacionesIds: number[] = []) {
     try {
-      const res = await fetch("/api/rooms");
+      let url = `${API_BASE_URL}/api/rooms`
+      const res = await fetch(url, {
+        headers: {
+          Authorization: "Bearer " + token
+        }
+      });
       const allRooms: Habitacion[] = await res.json();
 
       const habitacionesIdsSet = new Set(habitacionesIds);
@@ -77,13 +90,14 @@ const RoomRatesForm = () => {
 
   const saveData = async (data: TarifaType) => {
     try {
-      let url = `/api/rates/${id ? id : ""}`;
+      let url = `${API_BASE_URL}/api/rates/${id ? id : ""}`;
       const method = id == null ? "POST" : "PUT";
 
       const res = await fetch(url, {
         method,
         headers: {
           "Content-Type": "application/json",
+          Authorization: "Bearer " + token
         },
         body: JSON.stringify({
           fechaInicio: data.fechaInicio,

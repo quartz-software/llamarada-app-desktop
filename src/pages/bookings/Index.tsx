@@ -11,6 +11,8 @@ import { Calendar } from "@/shared/components/ui/calendar";
 
 const Habitaciones = () => {
 
+  const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
+
   const [dateRange, setDateRange] = useState<DateRange | undefined>();
   const [roomsData, setRoomsData] = useState<Habitacion[]>([]);
 
@@ -20,13 +22,15 @@ const Habitaciones = () => {
       const startDate = dateRange?.from?.toISOString().split('T')[0]
       const endDate = dateRange?.to?.toISOString().split('T')[0]
       const params = `?startDate=${startDate}&endDate=${endDate}`
+      const token = localStorage.getItem("token")
       const url =
-      "/api/bookings/available" +
+        `${API_BASE_URL}/api/bookings/available` +
       (dateRange && dateRange.from && dateRange.to ? params : "");
       const cont = {
         method: "GET",
         headers: {
           "Content-Type": "application/json",
+          Authorization: "Bearer " + token
         },
       };
       const res = await fetch(url, cont)

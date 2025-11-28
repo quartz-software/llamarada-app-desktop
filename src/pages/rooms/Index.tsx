@@ -9,6 +9,10 @@ import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectVa
 import { Label } from "@/shared/components/ui/label";
 
 const Index = () => {
+  const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
+  const token = localStorage.getItem("token")
+
+
   const nav = useNavigate();
   const [roomsData, setRoomsData] = useState<Habitacion[]>([]);
 
@@ -23,8 +27,12 @@ const Index = () => {
 
   async function getData() {
     try {
-      const url = "/api/rooms";
-      const res = await fetch(url)
+      const url = `${API_BASE_URL}/api/rooms`;
+      const res = await fetch(url, {
+        headers: {
+          Authorization: "Bearer " + token
+        }
+      })
       const data = await res.json()
       setRoomsData(data);
     } catch (error) {

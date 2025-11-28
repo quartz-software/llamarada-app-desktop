@@ -1,7 +1,5 @@
 import { useEffect, useState } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
-import RoomImage from "./components/RoomImage";
-import { Habitacion } from "@/shared/types/db/habitacion";
 import { z } from "zod";
 import { HabitacionCreateSchema } from "@/shared/schemas/models/habitacion";
 import { useForm } from "react-hook-form";
@@ -17,10 +15,14 @@ import { cn } from "@/shared/lib/utils";
 
 
 const Habitaciones_formulario = () => {
+
+  const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
+  const token = localStorage.getItem("token")
+
   const navigate = useNavigate();
   const [params] = useSearchParams();
   const idHabitacion = params.get("id");
-  const [isEditing, setIsEditing] = useState(idHabitacion == null ? false : true)
+  const [isEditing] = useState(idHabitacion == null ? false : true)
 
   type HabitacionType = z.infer<typeof HabitacionCreateSchema>
   const form = useForm<HabitacionType>({
@@ -37,17 +39,21 @@ const Habitaciones_formulario = () => {
     handleSubmit,
     control,
     reset,
-    formState: { isSubmitting }
+    // formState: { isSubmitting }
   } = form
 
-  const [roomData, setRoomData] = useState<ImagenHabitacion[]>([]);
+  const [roomData] = useState<ImagenHabitacion[]>([]);
 
   //const [RoomImages, setRoomImages] = useState<RoomImage[]>([])
 
   async function getData() {
     try {
-      let url = `/api/rooms/${idHabitacion}`;
-      const res = await fetch(url)
+      let url = `${API_BASE_URL}/api/rooms/${idHabitacion}`;
+      const res = await fetch(url, {
+        headers: {
+          Authorization: "Bearer " + token
+        }
+      })
       const data = await res.json()
       reset({
         numeroHabitacion: data.numeroHabitacion,
@@ -96,10 +102,13 @@ const Habitaciones_formulario = () => {
       formData.append("images", JSON.stringify(imageMetaData));
 
       const id = isEditing ? idHabitacion : null;
-      let url = `/api/rooms/${id ? id : ""}`;
+      let url = `${API_BASE_URL}/api/rooms/${id ? id : ""}`;
 
       let cont = {
         method: id == null ? "POST" : "PUT",
+        headers: {
+          Authorization: "Bearer " + token
+        },
         body: formData,
       };
 

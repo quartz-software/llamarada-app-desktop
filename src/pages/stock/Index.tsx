@@ -10,6 +10,8 @@ import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectVa
 import AlertDelete from "@/shared/components/AlertDelete";
 
 const Index = () => {
+  const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
+  const token = localStorage.getItem("token")
   const [stock, setStock] = useState<Stock[]>([]);
   const [isFormOpen, setFormOpen] = useState(false);
   const [isAlertOpen, setAlertOpen] = useState(false);
@@ -31,13 +33,13 @@ const Index = () => {
   })
 
   const handleSave = async (item: Stock) => {
-    let url = `/api/stock/${item.id > 0 ? item.id : ""}`
-    console.log(url);
+    let url = `${API_BASE_URL}/api/stock/${item.id > 0 ? item.id : ""}`
     const res = await fetch(url,
       {
         method: item.id <= 0 ? "POST" : "PUT",
         headers: {
           "Content-Type": "application/json",
+          Authorization: "Bearer " + token
         },
         body: JSON.stringify(item),
       }
@@ -58,7 +60,13 @@ const Index = () => {
   };
   const handleDelete = async (id: number) => {
     try {
-      const res = await fetch(`/api/stock/${id}`, { method: "DELETE" })
+      let url = `${API_BASE_URL}/api/stock/${id}`
+      const res = await fetch(url, {
+        method: "DELETE",
+        headers: {
+          Authorization: "Bearer " + token
+        }
+      })
       if (res.status === 204) {
         getStockData();
         setAlertOpen(false);
@@ -71,7 +79,12 @@ const Index = () => {
   };
   async function getStockData() {
     try {
-      const res = await fetch("/api/stock")
+      let url = `${API_BASE_URL}/api/stock`
+      const res = await fetch(url, {
+        headers: {
+          Authorization: "Bearer " + token
+        }
+      })
       const data = await res.json()
       setStock(data);
     } catch (error) {

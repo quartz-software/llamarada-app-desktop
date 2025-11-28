@@ -20,6 +20,10 @@ import { toast } from "sonner";
 import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList } from "@/shared/components/ui/command";
 
 const BookingForm = () => {
+  const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
+
+  const token = localStorage.getItem("token")
+
   const nav = useNavigate();
 
   const location = useLocation();
@@ -54,11 +58,12 @@ const BookingForm = () => {
 
   const postData = async (data: ReservaType) => {
     try {
-      let url = "/api/bookings";
+      let url = `${API_BASE_URL}/api/bookings`;
       let cont = {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
+          Authorization: "Bearer " + token
         },
         body: JSON.stringify({
           idCliente: data.idCliente,
@@ -86,11 +91,12 @@ const BookingForm = () => {
 
   async function getClients() {
     try {
-      let url = "/api/clients";
+      let url = `${API_BASE_URL}/api/clients`;
       let cont = {
         method: "GET",
         headers: {
           "Content-Type": "application/json",
+          Authorization: "Bearer " + token
         },
       };
       const res = await fetch(url, cont)

@@ -1,5 +1,5 @@
 import "./App.css";
-import { BrowserRouter, Navigate, Route, Routes } from "react-router-dom";
+import { Navigate, Route, Routes } from "react-router-dom";
 // import { useState } from "react";
 
 import Layout from "./shared/Layout";
@@ -9,7 +9,6 @@ import AddServices from "./pages/addservices/Index";
 import Bookings from "./pages/bookings/Index";
 import BookingForm from "./pages/bookings/BookingForm";
 import Login from "./pages/auth/Login";
-import Promotions from "./pages/promotions/Promotions";
 import Services from "./pages/services/Index";
 import Stock from "./pages/stock/Index";
 import Tasks from "./pages/tasks/Index";
@@ -17,7 +16,6 @@ import RoomRates from "./pages/RoomRate/RoomRates";
 // import useUserRole from "./pages/common/hooks/useUserRole";
 import Rooms from "./pages/rooms/Index";
 import RoomRatesForm from "./pages/RoomRate/RoomRatesForm";
-import PromotionsForm from "./pages/promotions/PromotionsForm";
 import Habitaciones_formulario from "./pages/rooms/Habitaciones_formulario";
 import { Toaster } from "./shared/components/ui/sonner";
 // import { useEffect, useState } from "react";
@@ -48,10 +46,10 @@ function App() {
   // if (isAuth === null) {
   // return <div>Loading...</div>;
   // }
+
   return (
     <>
-      <BrowserRouter>
-        <Routes>
+      <Routes>
           <Route path="/login" element={<Login />} />
           <Route path="/" element={<Layout />}>
             <Route
@@ -71,11 +69,7 @@ function App() {
             <Route path="bookings">
               <Route index element={<Bookings />} />
               <Route path="create" element={<BookingForm />} />
-            </Route>
-            <Route path="promotions">
-              <Route index element={<Promotions />} />
-              <Route path="edit" element={<PromotionsForm />} />
-            </Route>
+          </Route>
             <Route path="rates">
               <Route index element={<RoomRates />} />
               <Route path="edit" element={<RoomRatesForm />} />
@@ -88,8 +82,7 @@ function App() {
             <Route path="stock" element={<Stock />} />
             <Route path="tasks" element={<Tasks />} />
           </Route>
-        </Routes>
-      </BrowserRouter>
+      </Routes>
       <Toaster />
     </>
   );

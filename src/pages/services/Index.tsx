@@ -14,13 +14,19 @@ const Services: React.FC = () => {
   const [isAlertOpen, setAlertOpen] = useState(false);
   const [serviceToDelete, setServiceToDelete] = useState(0)
 
+  const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
+  const token = localStorage.getItem("token")
+
+
   const handleAddService = async (service: Servicio) => {
     try {
+      let url = `${API_BASE_URL}/api/services`
       const newService: Servicio = { ...service, id: Date.now() };
-      const res = await fetch("/api/services", {
+      const res = await fetch(url, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
+          Authorization: "Bearer " + token
         },
         body: JSON.stringify(newService),
       })
@@ -37,11 +43,12 @@ const Services: React.FC = () => {
 
   const handleEditService = async (updatedService: Servicio) => {
     try {
-      let url = `/api/services/${updatedService.id}`
+      let url = `${API_BASE_URL}/api/services/${updatedService.id}`
       const res = await fetch(url, {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",
+          Authorization: "Bearer " + token
         },
         body: JSON.stringify(updatedService),
       })
@@ -60,8 +67,13 @@ const Services: React.FC = () => {
 
   const handleDeleteService = async (id: number) => {
     try {
-      let url = `/api/services/${id}`
-      const res = await fetch(url, { method: "DELETE", })
+      let url = `${API_BASE_URL}/api/services/${id}`
+      const res = await fetch(url, {
+        method: "DELETE",
+        headers: {
+          Authorization: "Bearer " + token
+        }
+      })
       if (res.status === 204) {
         getList()
         setAlertOpen(false);
@@ -82,7 +94,12 @@ const Services: React.FC = () => {
   };
   async function getList() {
     try {
-      const res = await fetch("/api/services");
+      let url = `${API_BASE_URL}/api/services`
+      const res = await fetch(url, {
+        headers: {
+          Authorization: "Bearer " + token
+        }
+      });
       const data = await res.json();
       setServices(data);
     } catch (error) {

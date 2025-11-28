@@ -16,6 +16,9 @@ type ModalClienteProps = {
 };
 
 const Cliente_Formulario_Modal: FC<ModalClienteProps> = ({ open, setOpen, reloadClients }) => {
+  const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
+  const token = localStorage.getItem("token")
+
   const ClienteUsuarioCreateSchema = z.object({
     cliente: ClienteCreateSchema,
     usuario: UsuarioCreateSchema,
@@ -50,11 +53,12 @@ const Cliente_Formulario_Modal: FC<ModalClienteProps> = ({ open, setOpen, reload
 
   const onCreateClient = async (data: ClienteType) => {
     try {
-      let url = "/api/clients";
+      let url = `${API_BASE_URL}/api/clients`;
       let cont = {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
+          Authorization: "Bearer " + token
         },
         body: JSON.stringify(data),
       };

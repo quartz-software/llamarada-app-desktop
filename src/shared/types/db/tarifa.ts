@@ -1,5 +1,3 @@
-import { Habitacion } from "./habitacion";
-
 export interface Tarifa {
   id: number;
   fechaInicio?: Date;

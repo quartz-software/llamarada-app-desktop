@@ -7,6 +7,7 @@ import tailwindcss from "@tailwindcss/vite";
 const apiURL = loadEnv("dev", process.cwd()).VITE_API_URL;
 // https://vitejs.dev/config/
 export default defineConfig({
+  base: "./",
   plugins: [
     react(),
     electron({
@@ -31,6 +32,9 @@ export default defineConfig({
     }),
     tailwindcss(),
   ],
+  define: {
+    "import.meta.env.VITE_API_BASE_URL": JSON.stringify(apiURL),
+  },
   server: {
     proxy: {
       "/api": apiURL,

@@ -1,8 +1,12 @@
 {
   "name": "escritorio",
   "private": true,
-  "version": "0.0.0",
+  "version": "1.0.0",
+  "description": "Sistema de Gestion Hotelera para el Hotel Llamarada",
   "type": "module",
+  "author": {
+    "name": "Quartz Software"
+  },
   "scripts": {
     "dev": "vite",
     "build": "tsc && vite build && electron-builder",

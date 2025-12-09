@@ -223,6 +223,7 @@ const RoomRatesForm = () => {
                         defaultMonth={field.value}
                         disabled={(date) => isBefore(startOfDay(date), startOfDay(new Date()))}
                         captionLayout="dropdown"
+                        toYear={2050}
                       />
                     </PopoverContent>
                   </Popover>
@@ -264,6 +265,7 @@ const RoomRatesForm = () => {
                         defaultMonth={field.value}
                         disabled={(date) => new Date() > date}
                         captionLayout="dropdown"
+                        toYear={2050}
                       />
                     </PopoverContent>
                   </Popover>

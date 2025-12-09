@@ -1,5 +1,4 @@
 import { FC } from "react";
-import "./CardRoom.css";
 import { useNavigate } from "react-router-dom";
 import { Habitacion } from "@/shared/types/db/habitacion";
 import { Card, CardContent, CardFooter, CardHeader } from "@/shared/components/ui/card";

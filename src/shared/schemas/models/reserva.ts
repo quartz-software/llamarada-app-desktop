@@ -17,7 +17,7 @@ export const ReservaCreateSchema = z.object({
   checkOut: z.coerce
     .date({ message: "Debe ingresar la fecha de salida" }),
 
-  precioTotal: z.number().optional(),
+  precioTotal: z.coerce.number().optional(),
 });
 
 export const ReservaUpdateSchema = ReservaCreateSchema.partial();

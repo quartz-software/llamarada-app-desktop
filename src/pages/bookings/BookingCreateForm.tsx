@@ -19,7 +19,7 @@ import { Calendar } from "@/shared/components/ui/calendar";
 import { toast } from "sonner";
 import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList } from "@/shared/components/ui/command";
 
-const BookingForm = () => {
+const BookingCreateForm = () => {
   const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
 
   const token = localStorage.getItem("token")
@@ -369,4 +369,4 @@ const BookingForm = () => {
   );
 };
 
-export default BookingForm;
+export default BookingCreateForm;

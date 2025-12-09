@@ -1,6 +1,7 @@
 import { Button } from "@/shared/components/ui/button"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/shared/components/ui/table"
 import { Tarifa } from "@/shared/types/db/tarifa"
+import { formatDate } from "@/shared/utils/formatDate"
 import { Pen, Trash } from "lucide-react"
 import { FC } from "react"
 import { useNavigate } from "react-router-dom"
@@ -9,15 +10,6 @@ interface RoomRateListProps {
   rates: Tarifa[]
   onDelete: (idTarifa: number) => void
 }
-
-const formatDate = (dateData?: Date) => {
-  if (!dateData) return "";
-  const isoDate = new Date(dateData).toISOString()
-  let date = isoDate.split("T")[0];
-  let dateParts = date.split("-");
-
-  return `${dateParts[2]}/${dateParts[1]}/${dateParts[0]}`;
-};
 
 const RoomRateList: FC<RoomRateListProps> = ({ rates, onDelete }) => {
   const nav = useNavigate();

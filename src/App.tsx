@@ -7,7 +7,7 @@ import Layout from "./shared/Layout";
 import Home from "./pages/home/Home";
 import AddServices from "./pages/addservices/Index";
 import Bookings from "./pages/bookings/Index";
-import BookingForm from "./pages/bookings/BookingForm";
+import BookingCreateForm from "./pages/bookings/BookingCreateForm";
 import Login from "./pages/auth/Login";
 import Services from "./pages/services/Index";
 import Stock from "./pages/stock/Index";
@@ -18,6 +18,7 @@ import Rooms from "./pages/rooms/Index";
 import RoomRatesForm from "./pages/RoomRate/RoomRatesForm";
 import Habitaciones_formulario from "./pages/rooms/Habitaciones_formulario";
 import { Toaster } from "./shared/components/ui/sonner";
+import BookingDetailsForm from "./pages/bookings/BookingDetailsForm";
 // import { useEffect, useState } from "react";
 // import useUserRole from "./shared/hooks/useUserRole";
 // import { UserRole } from "./shared/types/UserRole";
@@ -68,8 +69,9 @@ function App() {
             <Route path="addservices" element={<AddServices />} />
             <Route path="bookings">
               <Route index element={<Bookings />} />
-              <Route path="create" element={<BookingForm />} />
-          </Route>
+            <Route path="create" element={<BookingCreateForm />} />
+            <Route path="details/:id" element={<BookingDetailsForm />} />
+          </Route >
             <Route path="rates">
               <Route index element={<RoomRates />} />
               <Route path="edit" element={<RoomRatesForm />} />
